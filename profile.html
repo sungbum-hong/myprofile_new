@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --ink:#2B2630; --muted:#9C97A4;
+    --line:#E7E4EA; --icon:#56505E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'IBM Plex Sans KR',sans-serif;
+    background:var(--bg);color:var(--ink);
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:0 0 40px;overflow-x:hidden;
+  }
+  body.is-open{justify-content:flex-start}
+
+  .app{position:relative;width:min(900px,94vw);margin:0 auto}
+  body:not(.is-open) .app{aspect-ratio:900/620}
+
+  /* ===== connecting lines ===== */
+  .links{position:absolute;inset:0;width:100%;height:100%;z-index:1;transition:opacity .35s}
+  body.is-open .links{opacity:0;pointer-events:none}
+  .tube line{stroke-linecap:round;transition:stroke .3s}
+  .t-sh{stroke:#2B2630;stroke-width:7;opacity:.13;filter:url(#tubeblur)}
+  .t-edge{stroke:#D6D1DE;stroke-width:7}
+  .t-body{stroke:#EEEBF2;stroke-width:4.2}
+  .t-hi{stroke:#FFFFFF;stroke-width:1.8;opacity:.95}
+  .tube.hot .t-edge{stroke:var(--td)}
+  .tube.hot .t-body{stroke:var(--ta)}
+
+  /* ===== CHARACTER ===== */
+  .mascot{
+    position:absolute;left:50%;top:47%;width:188px;z-index:5;
+    transform:translate(-50%,-50%) scale(1);transform-origin:top left;
+    transition:left .6s cubic-bezier(.5,0,.15,1),top .6s cubic-bezier(.5,0,.15,1),
+      transform .6s cubic-bezier(.5,0,.15,1);
+  }
+  .float{animation:floaty 6s ease-in-out infinite}
+  .mascot svg{display:block;width:100%;height:auto}
+  .eyes{transform-box:fill-box;transform-origin:center;animation:blink 6.5s infinite}
+  body.is-open .mascot{left:8px;top:52px;transform:translate(0,0) scale(.56);cursor:pointer}
+  body.is-about .mascot{top:16px}
+  body.is-open .mascot:hover{filter:brightness(1.06)}
+
+  /* ===== NODES ===== */
+  .node{
+    position:absolute;transform:translate(-50%,-50%);z-index:4;
+    display:flex;flex-direction:column;align-items:center;cursor:pointer;
+    transition:left .6s cubic-bezier(.5,0,.15,1),top .6s cubic-bezier(.5,0,.15,1),
+      transform .45s cubic-bezier(.2,.8,.2,1),opacity .4s;
+  }
+  .node:hover,.node:focus-visible{transform:translate(-50%,calc(-50% - 8px));outline:none}
+  .node.about{left:16%;top:19%;--ac:#ED0E6E}
+  .node.project{left:84%;top:19%;--ac:#7E33DE}
+  .node.skills{left:16%;top:81%;--ac:#D97757}
+
+  .ring-svg{width:118px;height:118px;display:block;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .node:hover .ring-svg,.node:focus-visible .ring-svg{transform:scale(1.08)}
+  .ring{fill:#fff;stroke:var(--line);stroke-width:1.8;transition:stroke .3s}
+  .node:hover .ring,.node:focus-visible .ring{stroke:var(--ac)}
+  .icon{fill:none;stroke:var(--icon);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+  .node:hover .icon,.node:focus-visible .icon{stroke:var(--ac)}
+  .icon-fill{fill:var(--icon);transition:fill .3s}
+  .node:hover .icon-fill,.node:focus-visible .icon-fill{fill:var(--ac)}
+  .label{margin-top:14px;text-align:center;transition:opacity .3s}
+  .label .en{display:block;font-size:.62rem;font-weight:600;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted)}
+  .label .ko{display:block;font-size:1rem;font-weight:500;color:var(--ink);margin-top:4px;transition:color .3s}
+  .node:hover .ko,.node:focus-visible .ko{color:var(--ac)}
+
+  /* active node -> header top-right */
+  body.is-about .node.about,
+  body.is-project .node.project,
+  body.is-skills .node.skills{
+    left:100%;top:52px;transform:translate(-100%,0) scale(.78);
+    transform-origin:top right;pointer-events:none;
+  }
+  body.is-about .node.about{top:16px}
+  body.is-about .node.about .label,
+  body.is-project .node.project .label,
+  body.is-skills .node.skills .label{opacity:0}
+  body.is-about .node.about .ring,
+  body.is-project .node.project .ring{stroke:var(--ac)}
+  body.is-about .node.about .icon,
+  body.is-project .node.project .icon{stroke:var(--ac)}
+  /* inactive nodes fade */
+  body.is-about .node.project,body.is-about .node.skills,
+  body.is-project .node.about,body.is-project .node.skills,
+  body.is-skills .node.about,body.is-skills .node.project{opacity:0;pointer-events:none}
+
+  /* ===== DETAIL (shared) ===== */
+  .detail{
+    position:absolute;top:0;left:0;right:0;
+    opacity:0;visibility:hidden;
+    padding:226px 6px 90px;max-width:660px;
+    transition:opacity .55s .12s;
+  }
+  body.is-about .detail-about,
+  body.is-project .detail-project,
+  body.is-skills .detail-skills{position:static;opacity:1;visibility:visible}
+  body.is-about .detail-about{padding-top:140px}
+  .detail-about{--acc:#ED0E6E}
+  .detail-project{--acc:#7E33DE;max-width:none}
+  .detail-skills{--acc:#D97757}
+
+  .kicker{
+    font-size:.66rem;font-weight:600;letter-spacing:.24em;color:var(--acc);
+    text-transform:uppercase;margin-bottom:14px;
+  }
+  .detail h1{
+    font-size:clamp(1.7rem,4.2vw,2.4rem);font-weight:600;line-height:1.35;
+    letter-spacing:-.01em;margin-bottom:22px;
+  }
+  .detail .lead{
+    font-size:1rem;font-weight:300;line-height:1.95;color:#5B5563;margin-bottom:42px;
+  }
+
+  /* about page typography */
+  .detail-about h1{
+    position:relative;
+    font-weight:300;
+    background:#0B0910;color:#FFFFFF;
+    padding:120px 32px;
+    box-shadow:0 0 0 100vmax #0B0910;
+    clip-path:inset(0 -100vmax);
+  }
+  .detail-about h1 b{font-weight:700}
+  .detail-about h1 .name{font-weight:700;color:var(--acc)}
+
+  /* about gears (background decoration) */
+  .detail-about .gears{
+    position:absolute;
+    top:232px;right:0;
+    width:740px;height:auto;
+    pointer-events:none;z-index:1;
+    overflow:visible;
+  }
+  .detail-about .gears .hole{fill:#0B0910}
+  .detail-about .gears .spin{
+    transform-origin:0 0;
+    animation:gearSpin 22s linear infinite;
+  }
+  .detail-about .gear-2 .spin{animation-duration:15s;animation-direction:reverse}
+  .detail-about .gear-3 .spin{animation-duration:11s}
+  @keyframes gearSpin{to{transform:rotate(360deg)}}
+
+  /* about facts */
+  .facts{border-top:1px solid var(--line)}
+  .facts .row{display:flex;gap:20px;padding:15px 2px;border-bottom:1px solid var(--line)}
+  .facts .k{flex:0 0 88px;font-size:.74rem;font-weight:600;letter-spacing:.04em;
+    color:var(--muted);text-transform:uppercase;padding-top:2px}
+  .facts .v{font-size:.96rem;font-weight:400;color:var(--ink)}
+  .note{margin-top:30px;font-size:.8rem;color:var(--muted);font-weight:300}
+
+  /* project cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{
+    display:block;color:var(--ink);text-decoration:none;
+    border:1px solid var(--line);border-radius:15px;padding:22px 22px 20px;
+    background:#fff;cursor:pointer;
+    transition:border-color .3s,transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;
+  }
+  .card:hover{
+    border-color:var(--acc);transform:translateY(-5px);
+    box-shadow:0 16px 30px -16px rgba(43,38,48,.32);
+  }
+  .card .yr{
+    font-size:.68rem;font-weight:600;letter-spacing:.14em;color:var(--muted);
+    display:block;text-align:right;margin-bottom:14px;
+  }
+  .card .brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .card .logo{
+    flex:0 0 44px;width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:#F4F2F6;color:var(--acc);overflow:hidden;
+    font-size:1.1rem;font-weight:700;letter-spacing:-.02em;
+    transition:background .3s,color .3s;
+  }
+  .card .logo img{width:100%;height:100%;object-fit:contain;display:block}
+  .card:hover .logo:not(:has(img)){background:var(--acc);color:#fff}
+  .card .brand-text{display:flex;flex-direction:column;min-width:0}
+  .card h3{font-size:1.06rem;font-weight:600;line-height:1.25;transition:color .3s}
+  .card:hover h3{color:var(--acc)}
+  .card .slogan{
+    font-size:.74rem;font-weight:400;color:var(--muted);
+    margin-top:3px;line-height:1.4;
+  }
+  .card p{font-size:.85rem;font-weight:300;line-height:1.7;color:#5B5563;margin-bottom:14px}
+  .card .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .card .tags span{
+    font-size:.68rem;color:#6E6878;background:#F4F2F6;border-radius:20px;padding:4px 10px;
+  }
+
+  /* skill groups */
+  .skillset{display:flex;flex-direction:column;gap:26px}
+  .skillgroup .glabel{
+    font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chips span{
+    font-size:.88rem;color:var(--ink);background:#F4F2F6;
+    border:1px solid var(--line);border-radius:10px;padding:8px 14px;
+    transition:border-color .25s,background .25s;
+  }
+  .chips span:hover{border-color:var(--acc);background:#fff}
+
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes blink{0%,93%,100%{transform:scaleY(1)}96.5%{transform:scaleY(.1)}}
+
+  /* ===== MOBILE (home only) ===== */
+  @media(max-width:720px){
+    body:not(.is-open) .app{
+      aspect-ratio:auto;display:flex;flex-direction:column;
+      align-items:center;gap:34px;padding:30px 0;
+    }
+    body:not(.is-open) .links{display:none}
+    body:not(.is-open) .mascot,body:not(.is-open) .node{
+      position:static;transform:none;width:auto;
+    }
+    body:not(.is-open) .mascot{width:min(168px,44vw);order:1}
+    body:not(.is-open) .node.about{order:2}
+    body:not(.is-open) .node.project{order:3}
+    body:not(.is-open) .node.skills{order:4}
+    body:not(.is-open) .node:hover,body:not(.is-open) .node:focus-visible{transform:translateY(-6px)}
+    body.is-open .detail{padding-top:160px}
+    body.is-open .mascot{width:150px}
+    .detail-about h1{padding:83px 22px}
+    .detail-about .gears{top:210px;width:440px}
+    .cards{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){.float,.eyes,.detail-about .spin{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== ABOUT NODE ===== -->
+  <div class="node about" tabindex="0" role="link" aria-label="About" data-view="about" data-line="ln-about">
+    <svg class="ring-svg" viewBox="0 0 120 120">
+      <defs>
+        <linearGradient id="ab-f" x1="0.2" y1="0" x2="0.8" y2="1">
+          <stop offset="0" stop-color="#FF93C0"/><stop offset="1" stop-color="#DD1066"/>
+        </linearGradient>
+        <filter id="ab-s" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.2"/>
+        </filter>
+      </defs>
+      <ellipse cx="58" cy="100" rx="30" ry="6.5" fill="#2B0E1C" opacity="0.22" filter="url(#ab-s)"/>
+      <path d="M46 32H74A16 16 0 0 1 90 48V54A16 16 0 0 1 74 70H50L36 85L46 70A16 16 0 0 1 30 54V48A16 16 0 0 1 46 32Z"
+            fill="#B30852" transform="translate(1,6)"/>
+      <path d="M46 32H74A16 16 0 0 1 90 48V54A16 16 0 0 1 74 70H50L36 85L46 70A16 16 0 0 1 30 54V48A16 16 0 0 1 46 32Z"
+            fill="url(#ab-f)"/>
+      <ellipse cx="51" cy="44" rx="16" ry="6.4" fill="#FFFFFF" opacity="0.4" transform="rotate(-16 51 44)"/>
+      <g fill="#FFFFFF">
+        <circle cx="49" cy="52" r="4.3"/><circle cx="60" cy="52" r="4.3"/><circle cx="71" cy="52" r="4.3"/>
+      </g>
+    </svg>
+    <div class="label"><span class="en">About</span><span class="ko">소개</span></div>
+  </div>
+
+  <!-- ===== PROJECT NODE ===== -->
+  <div class="node project" tabindex="0" role="link" aria-label="Project" data-view="project" data-line="ln-project">
+    <svg class="ring-svg" viewBox="0 0 120 120">
+      <defs>
+        <linearGradient id="pr-f" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9A5BEC"/><stop offset="1" stop-color="#7C3FCE"/>
+        </linearGradient>
+        <filter id="pr-s" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.2"/>
+        </filter>
+      </defs>
+      <ellipse cx="62" cy="100" rx="33" ry="7" fill="#1A0E2A" opacity="0.22" filter="url(#pr-s)"/>
+      <path d="M77 52L90 43L90 79L77 88Z" fill="#5E2BA8"/>
+      <path d="M39 52L77 52L90 43L52 43Z" fill="#B888F0"/>
+      <path d="M66 44V23" stroke="#4A2185" stroke-width="3" stroke-linecap="round"/>
+      <path d="M66 24L80 28L66 32Z" fill="#D97757"/>
+      <path d="M39 52H77V88H39Z" fill="url(#pr-f)"/>
+      <rect x="45" y="59" width="11" height="12" rx="1.5" fill="#E4D3FA"/>
+      <rect x="61" y="59" width="11" height="12" rx="1.5" fill="#E4D3FA"/>
+      <path d="M53 88V77a5 5 0 0 1 10 0V88Z" fill="#4E2192"/>
+    </svg>
+    <div class="label"><span class="en">Project</span><span class="ko">프로젝트</span></div>
+  </div>
+
+  <!-- ===== SKILLS NODE ===== -->
+  <div class="node skills" tabindex="0" role="link" aria-label="Skills" data-view="skills" data-line="ln-skills">
+    <svg class="ring-svg" viewBox="0 0 120 120">
+      <defs>
+        <radialGradient id="sk-f" cx="0.4" cy="0.34" r="0.82">
+          <stop offset="0" stop-color="#F4BBA3"/>
+          <stop offset="0.55" stop-color="#DD7E5C"/>
+          <stop offset="1" stop-color="#BD5C3C"/>
+        </radialGradient>
+        <path id="sray" d="M60 33C56.6 43 56.4 52 58.4 58.4C59 60.4 61 60.4 61.6 58.4C63.6 52 63.4 43 60 33Z"/>
+        <filter id="sk-s" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.2"/>
+        </filter>
+      </defs>
+      <ellipse cx="61" cy="98" rx="27" ry="6.5" fill="#2A1208" opacity="0.22" filter="url(#sk-s)"/>
+      <g fill="#A8482C" transform="translate(1.5,4)">
+        <use href="#sray"/>
+        <use href="#sray" transform="rotate(32.7 60 59)"/>
+        <use href="#sray" transform="rotate(65.5 60 59)"/>
+        <use href="#sray" transform="rotate(98.2 60 59)"/>
+        <use href="#sray" transform="rotate(130.9 60 59)"/>
+        <use href="#sray" transform="rotate(163.6 60 59)"/>
+        <use href="#sray" transform="rotate(196.4 60 59)"/>
+        <use href="#sray" transform="rotate(229.1 60 59)"/>
+        <use href="#sray" transform="rotate(261.8 60 59)"/>
+        <use href="#sray" transform="rotate(294.5 60 59)"/>
+        <use href="#sray" transform="rotate(327.3 60 59)"/>
+        <circle cx="60" cy="59" r="6"/>
+      </g>
+      <g fill="url(#sk-f)">
+        <use href="#sray"/>
+        <use href="#sray" transform="rotate(32.7 60 59)"/>
+        <use href="#sray" transform="rotate(65.5 60 59)"/>
+        <use href="#sray" transform="rotate(98.2 60 59)"/>
+        <use href="#sray" transform="rotate(130.9 60 59)"/>
+        <use href="#sray" transform="rotate(163.6 60 59)"/>
+        <use href="#sray" transform="rotate(196.4 60 59)"/>
+        <use href="#sray" transform="rotate(229.1 60 59)"/>
+        <use href="#sray" transform="rotate(261.8 60 59)"/>
+        <use href="#sray" transform="rotate(294.5 60 59)"/>
+        <use href="#sray" transform="rotate(327.3 60 59)"/>
+        <circle cx="60" cy="59" r="6"/>
+      </g>
+      <ellipse cx="53" cy="50" rx="10" ry="5.4" fill="#FFFFFF" opacity="0.45" transform="rotate(-20 53 50)"/>
+    </svg>
+    <div class="label"><span class="en">Skills</span><span class="ko">기술</span></div>
+  </div>
+
+  <!-- ===== CHARACTER ===== -->
+  <div class="mascot">
+    <div class="float">
+    <svg viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="oran" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#FFC926"/><stop offset="1" stop-color="#FF8A12"/>
+        </linearGradient>
+        <radialGradient id="gloss" cx="0.34" cy="0.3" r="0.72">
+          <stop offset="0" stop-color="#ffffff" stop-opacity="0.42"/>
+          <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="130" cy="270" rx="74" ry="12" fill="#2A2333" opacity="0.12"/>
+      <path d="M130 46C130 24 153 22 150 39C148 49 137 47 140 36" fill="none"
+            stroke="#ED0E6E" stroke-width="7" stroke-linecap="round"/>
+      <ellipse cx="103" cy="244" rx="21" ry="13" fill="#1B1424"/>
+      <ellipse cx="157" cy="244" rx="21" ry="13" fill="#1B1424"/>
+      <path d="M44 150C26 154 22 178 35 184C46 189 53 171 51 159Z" fill="#1B1424"/>
+      <path d="M216 150C234 154 238 178 225 184C214 189 207 171 209 159Z" fill="#1B1424"/>
+      <path d="M130 39 A96 96 0 0 1 192 209 C160 205 135 183 140 145 C165 115 150 65 130 39 Z" fill="#ED0E6E"/>
+      <path d="M37 110 A96 96 0 0 1 130 39 C150 65 165 115 140 145 C105 140 65 113 37 110 Z" fill="url(#oran)"/>
+      <path d="M192 209 A96 96 0 0 1 37 110 C65 113 105 140 140 145 C135 183 160 205 192 209 Z" fill="#7E33DE"/>
+      <circle cx="130" cy="135" r="96" fill="url(#gloss)"/>
+      <ellipse cx="90" cy="174" rx="13" ry="8" fill="#ffffff" opacity="0.32"/>
+      <ellipse cx="170" cy="174" rx="13" ry="8" fill="#ffffff" opacity="0.32"/>
+      <g class="eyes">
+        <circle cx="104" cy="150" r="20" fill="#1B1424"/>
+        <circle cx="156" cy="150" r="20" fill="#1B1424"/>
+        <circle cx="97" cy="142" r="6.5" fill="#FFF7EE"/>
+        <circle cx="149" cy="142" r="6.5" fill="#FFF7EE"/>
+        <circle cx="110" cy="157" r="3" fill="#FFF7EE"/>
+        <circle cx="162" cy="157" r="3" fill="#FFF7EE"/>
+      </g>
+      <path d="M118 181C124 191 136 191 142 181" fill="none"
+            stroke="#1B1424" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    </div>
+  </div>
+
+  <!-- ===== DETAIL : ABOUT ===== -->
+  <section class="detail detail-about">
+    <svg class="gears" viewBox="0 0 720 220" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="gear-face" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#CFCFCF"/>
+          <stop offset="0.5" stop-color="#7A7A7A"/>
+          <stop offset="1" stop-color="#2F2F2F"/>
+        </linearGradient>
+        <rect id="t1" x="-5" y="-62" width="10" height="12" rx="1.5" fill="url(#gear-face)"/>
+        <rect id="t2" x="-4" y="-46" width="8" height="9" rx="1.2" fill="url(#gear-face)"/>
+        <rect id="t3" x="-3.5" y="-33" width="7" height="7" rx="1" fill="url(#gear-face)"/>
+        <filter id="gear-shadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3"/>
+        </filter>
+      </defs>
+      <g class="gear gear-1" transform="translate(510,90)">
+        <ellipse cx="3" cy="58" rx="55" ry="7" fill="#000" opacity="0.45" filter="url(#gear-shadow)"/>
+        <g class="spin">
+          <use href="#t1"/>
+          <use href="#t1" transform="rotate(30)"/>
+          <use href="#t1" transform="rotate(60)"/>
+          <use href="#t1" transform="rotate(90)"/>
+          <use href="#t1" transform="rotate(120)"/>
+          <use href="#t1" transform="rotate(150)"/>
+          <use href="#t1" transform="rotate(180)"/>
+          <use href="#t1" transform="rotate(210)"/>
+          <use href="#t1" transform="rotate(240)"/>
+          <use href="#t1" transform="rotate(270)"/>
+          <use href="#t1" transform="rotate(300)"/>
+          <use href="#t1" transform="rotate(330)"/>
+          <circle r="50" fill="url(#gear-face)"/>
+          <circle r="17" class="hole"/>
+        </g>
+      </g>
+      <g class="gear gear-2" transform="translate(600,135)">
+        <ellipse cx="2" cy="42" rx="40" ry="5" fill="#000" opacity="0.45" filter="url(#gear-shadow)"/>
+        <g class="spin">
+          <use href="#t2"/>
+          <use href="#t2" transform="rotate(36)"/>
+          <use href="#t2" transform="rotate(72)"/>
+          <use href="#t2" transform="rotate(108)"/>
+          <use href="#t2" transform="rotate(144)"/>
+          <use href="#t2" transform="rotate(180)"/>
+          <use href="#t2" transform="rotate(216)"/>
+          <use href="#t2" transform="rotate(252)"/>
+          <use href="#t2" transform="rotate(288)"/>
+          <use href="#t2" transform="rotate(324)"/>
+          <circle r="36" fill="url(#gear-face)"/>
+          <circle r="12" class="hole"/>
+        </g>
+      </g>
+      <g class="gear gear-3" transform="translate(550,175)">
+        <ellipse cx="1.5" cy="30" rx="29" ry="4" fill="#000" opacity="0.45" filter="url(#gear-shadow)"/>
+        <g class="spin">
+          <use href="#t3"/>
+          <use href="#t3" transform="rotate(45)"/>
+          <use href="#t3" transform="rotate(90)"/>
+          <use href="#t3" transform="rotate(135)"/>
+          <use href="#t3" transform="rotate(180)"/>
+          <use href="#t3" transform="rotate(225)"/>
+          <use href="#t3" transform="rotate(270)"/>
+          <use href="#t3" transform="rotate(315)"/>
+          <circle r="26" fill="url(#gear-face)"/>
+          <circle r="9" class="hole"/>
+        </g>
+      </g>
+    </svg>
+    <h1>
+      유기적이며 생각을 실행으로,<br>실행을 결과로 증명하는<br><b>PM</b> <span class="name">홍성범</span> 입니다.
+    </h1>
+    <div class="facts">
+      <div class="row"><div class="k">Name</div><div class="v">홍성범</div></div>
+      <div class="row"><div class="k">Role</div><div class="v">Product Manager</div></div>
+      <div class="row"><div class="k">Based</div><div class="v">Seoul, Korea</div></div>
+      <div class="row"><div class="k">Focus</div><div class="v">생각 → 실행 → 결과</div></div>
+    </div>
+  </section>
+
+  <!-- ===== DETAIL : PROJECT ===== -->
+  <section class="detail detail-project">
+    <p class="kicker">Project</p>
+    <h1>지금까지<br>만들어 온 것들</h1>
+    <p class="lead">
+      작업한 프로젝트를 카드로 정리했어요. 각 카드에 제목·설명·사용 기술을
+      담아 두면 됩니다. 카드를 추가하거나 내용을 바꿔서 채워보세요.
+    </p>
+    <div class="cards">
+      <a class="card" href="/work/codiyoung.html" aria-label="코디영 케이스 스터디 자세히 보기">
+        <div class="yr">2026</div>
+        <div class="brand">
+          <div class="logo"><img src="/codiyoung-logo.png" alt="코디영 로고"></div>
+          <div class="brand-text">
+            <h3>코디영 (Codiyoung)</h3>
+            <span class="slogan">코딩 · 디자인 · 영상편집</span>
+          </div>
+        </div>
+        <p>스터디·공모전·출석체크를 한 곳에서 운영하는 학습 커뮤니티 플랫폼.</p>
+      </a>
+      <article class="card">
+        <div class="yr">2025</div>
+        <div class="brand">
+          <div class="logo"><img src="/chungpodo-logo.ico" alt="청포도 로고"></div>
+          <div class="brand-text">
+            <h3>청포도 (Chungpodo)</h3>
+            <span class="slogan">청년들 포기하지마, 도와줄게</span>
+          </div>
+        </div>
+        <p>집구하기 · 자취꿀팁 · 일상상담을 한 곳에 모은 청년 생활 지원 플랫폼.</p>
+      </article>
+      <article class="card">
+        <div class="yr">2025</div>
+        <div class="brand">
+          <div class="logo">독</div>
+          <div class="brand-text">
+            <h3>독서 기록 대시보드</h3>
+            <span class="slogan">읽은 책이 데이터가 되는 순간</span>
+          </div>
+        </div>
+        <p>읽은 책을 시각화하고 통계로 보여주는 대시보드.
+           차트와 필터 UX를 직접 설계했다.</p>
+      </article>
+      <article class="card">
+        <div class="yr">2024</div>
+        <div class="brand">
+          <div class="logo">N</div>
+          <div class="brand-text">
+            <h3>새 프로젝트 자리</h3>
+            <span class="slogan">여기에 슬로건을 적어 보세요</span>
+          </div>
+        </div>
+        <p>이 카드를 복사해서 새 프로젝트를 계속 추가할 수 있어요.</p>
+      </article>
+    </div>
+    <p class="note">↑ 모든 내용은 예시예요. 카드를 자유롭게 추가·수정하세요.</p>
+  </section>
+
+  <!-- ===== DETAIL : SKILLS ===== -->
+  <section class="detail detail-skills">
+    <p class="kicker">Skills</p>
+    <h1>다루는 도구와<br>기술 스택</h1>
+    <p class="lead">
+      익숙하게 다루는 기술을 분야별로 정리하는 칸이에요.<br>
+      그룹을 추가하거나 이름을 바꿔서 본인 스택에 맞게 채워보세요.
+    </p>
+    <div class="skillset">
+      <div class="skillgroup">
+        <div class="glabel">Claude</div>
+        <div class="chips">
+          <span>사고 정리·전략</span><span>문서·기획서</span><span>리서치 요약</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="glabel">Claude Code</div>
+        <div class="chips">
+          <span>코드 구현</span><span>디버깅</span><span>터미널 자동화</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="glabel">Claude Design</div>
+        <div class="chips">
+          <span>UI 설계</span><span>프로토타입</span><span>비주얼 기획</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="glabel">Tools</div>
+        <div class="chips">
+          <span>Vercel</span><span>Git</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const body=document.body;
+  const mascot=document.querySelector('.mascot');
+
+  function openView(v){body.classList.add('is-open','is-'+v);window.scrollTo({top:0,behavior:'auto'});}
+  function goHome(){body.classList.remove('is-open','is-about','is-project','is-skills');}
+
+  document.querySelectorAll('.node[data-view]').forEach(node=>{
+    const v=node.dataset.view;
+    node.addEventListener('click',()=>openView(v));
+    node.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();openView(v);}
+    });
+  });
+  mascot.addEventListener('click',()=>{if(body.classList.contains('is-open'))goHome();});
+</script>
+</body>
+</html>

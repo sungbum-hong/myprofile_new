@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코디영 (CODIYOUNG) — 케이스 스터디 / 홍성범</title>
+<meta name="description" content="청년 스터디·프로젝트·친목 커뮤니티 ‘코디영’의 0→1 구축 케이스 스터디.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --surface:#FFFFFF;
+    --text:#1C1C1E;
+    --muted:#6B7280;
+    --border:#EDEDF0;
+    --chip-bg:#F5F5F7;
+    --accent:#7C5CFF;
+    --accent-soft:#EFEAFF;
+    --shadow-1:0 1px 2px rgba(20,20,30,.04);
+    --shadow-2:0 18px 40px -22px rgba(20,20,40,.18), 0 2px 6px rgba(20,20,40,.04);
+    --shadow-lift:0 28px 60px -28px rgba(20,20,40,.28), 0 3px 10px rgba(20,20,40,.06);
+    --radius:18px;
+    --container:1160px;
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0E0E11;
+      --surface:#16161A;
+      --text:#F3F3F5;
+      --muted:#9CA3AF;
+      --border:#25252B;
+      --chip-bg:#1B1B21;
+      --accent:#9D86FF;
+      --accent-soft:#251E48;
+      --shadow-1:0 1px 2px rgba(0,0,0,.4);
+      --shadow-2:0 18px 40px -22px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.3);
+      --shadow-lift:0 28px 60px -28px rgba(0,0,0,.8), 0 3px 10px rgba(0,0,0,.35);
+    }
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Pretendard Variable','Pretendard',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+  .container{max-width:var(--container);margin:0 auto;padding:0 28px}
+
+  /* ===== top nav ===== */
+  .topnav{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter:saturate(160%) blur(14px);
+    -webkit-backdrop-filter:saturate(160%) blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .topnav .row{
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;
+  }
+  .navlink{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:.88rem;font-weight:500;color:var(--muted);
+    padding:8px 12px;border-radius:999px;
+    transition:color .2s, background .2s;
+  }
+  .navlink:hover{color:var(--text);background:var(--chip-bg)}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--text);color:var(--bg);
+    font-size:.88rem;font-weight:600;
+    padding:9px 16px;border-radius:999px;
+    transition:background .2s, transform .2s;
+  }
+  .pill:hover{background:var(--accent);transform:translateY(-1px)}
+
+  /* ===== hero ===== */
+  .hero{padding:64px 0 84px;position:relative}
+  .hero-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+  }
+  .brand-logo{
+    width:56px;height:56px;border-radius:16px;
+    background:var(--chip-bg);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    margin-bottom:22px;
+  }
+  .brand-logo img{width:100%;height:100%;object-fit:contain}
+
+  .eyebrow{
+    display:inline-block;
+    font-size:.74rem;font-weight:700;letter-spacing:.22em;
+    color:var(--accent);text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .title-xl{
+    font-size:clamp(2.6rem,6vw,4.6rem);
+    line-height:1;letter-spacing:-.04em;
+    margin-bottom:24px;
+  }
+  .title-xl b{font-weight:800}
+  .title-xl span{font-weight:300;color:var(--muted)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .chip{
+    font-size:.78rem;font-weight:500;color:var(--text);
+    background:var(--chip-bg);border:1px solid var(--border);
+    padding:6px 12px;border-radius:999px;
+  }
+  .chip.purple{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:600}
+
+  .lead{
+    font-size:1.02rem;color:var(--muted);max-width:520px;
+    margin-bottom:36px;
+  }
+
+  .meta{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px;
+    padding-top:24px;border-top:1px solid var(--border);
+  }
+  .meta .k{
+    font-size:.7rem;font-weight:700;letter-spacing:.16em;
+    color:var(--muted);text-transform:uppercase;margin-bottom:8px;
+  }
+  .meta .v{font-size:.95rem;font-weight:500}
+  .meta ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:4px}
+  .meta li{
+    font-size:.92rem;font-weight:500;color:var(--text);
+    padding-left:14px;position:relative;
+  }
+  .meta li::before{
+    content:"";position:absolute;left:0;top:.7em;
+    width:6px;height:6px;border-radius:999px;background:var(--accent);
+  }
+
+  /* browser mockup */
+  .mock{
+    position:relative;
+    transform:rotate(-1.2deg);
+    transform-origin:center;
+    margin-top:120px;
+  }
+  .mock-frame{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;overflow:hidden;
+    box-shadow:var(--shadow-2);
+  }
+  .mock-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:11px 14px;
+    background:color-mix(in srgb, var(--text) 4%, var(--surface));
+    border-bottom:1px solid var(--border);
+  }
+  .mock-bar i{width:11px;height:11px;border-radius:999px;display:block}
+  .mock-bar i:nth-child(1){background:#ff5f57}
+  .mock-bar i:nth-child(2){background:#febc2e}
+  .mock-bar i:nth-child(3){background:#28c840}
+  .mock-bar span{
+    margin-left:14px;font-size:.72rem;color:var(--muted);
+    background:var(--chip-bg);padding:4px 12px;border-radius:6px;
+    flex:1;text-align:center;
+  }
+  .mock-screen{
+    aspect-ratio:16/10;background:var(--chip-bg);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:.85rem;
+    background-image:
+      radial-gradient(circle at 20% 18%, var(--accent-soft) 0, transparent 36%),
+      radial-gradient(circle at 82% 78%, color-mix(in srgb, var(--accent) 18%, transparent) 0, transparent 42%);
+  }
+  .mock-screen img{width:100%;height:100%;object-fit:cover;display:block}
+  .mock-screen .ph{
+    text-align:center;padding:24px;
+  }
+  .mock-screen .ph .lg{
+    width:72px;height:72px;border-radius:20px;background:var(--surface);
+    margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow-1);
+  }
+  .mock-screen .ph .lg img{width:46px;height:46px}
+
+  /* ===== section base ===== */
+  section.block{padding:84px 0;border-top:1px solid var(--border)}
+  .section-head{margin-bottom:42px;max-width:760px}
+  .section-head h2{
+    font-size:clamp(1.7rem,3vw,2.4rem);
+    font-weight:800;letter-spacing:-.025em;line-height:1.2;
+    margin-bottom:14px;
+  }
+  .section-head p{color:var(--muted);font-size:1rem;max-width:640px}
+
+  .two-col{
+    display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start;
+  }
+  /* Overview: 핵심 요약 카드를 섹션 헤딩 옆으로 끌어올림 */
+  @media (min-width:921px){
+    #overview .facts{margin-top:-150px}
+  }
+  .body-text p{margin-bottom:16px;font-size:1rem;color:var(--text)}
+  .body-text p:last-child{margin-bottom:0}
+
+  .facts{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px 22px 18px;
+    box-shadow:var(--shadow-1);
+    min-height:200px;
+  }
+  .facts .flabel{
+    font-size:.72rem;font-weight:700;letter-spacing:.18em;
+    color:var(--accent);text-transform:uppercase;margin-bottom:14px;
+  }
+  .facts ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .facts li{
+    font-size:.94rem;color:var(--text);padding-left:18px;
+    position:relative;line-height:1.55;
+  }
+  .facts li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:7px;height:7px;border-radius:999px;background:var(--accent);
+  }
+
+  /* ===== process ===== */
+  .steps{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:18px;
+  }
+  .step{
+    display:grid;grid-template-columns:88px 1fr;gap:18px;
+    padding:26px;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .25s;
+  }
+  .step:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-lift);
+    border-color:color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+  .step .num{
+    font-size:3rem;font-weight:800;color:var(--accent);
+    letter-spacing:-.04em;line-height:1;
+  }
+  .step h3{font-size:1.12rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+  .step p{font-size:.92rem;color:var(--muted);line-height:1.65}
+
+  /* ===== features ===== */
+  .features{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .feature{
+    padding:30px 26px;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .25s;
+  }
+  .feature:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-lift);
+    border-color:color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+  .feature .ic{
+    width:46px;height:46px;border-radius:13px;
+    background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:18px;
+  }
+  .feature .ic svg{width:24px;height:24px}
+  .feature h3{font-size:1.08rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+  .feature p{font-size:.92rem;color:var(--muted);line-height:1.65}
+
+  /* ===== outcome ===== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .stat{
+    padding:32px 28px;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+  }
+  .stat .n{
+    font-size:2.75rem;font-weight:800;color:var(--accent);
+    letter-spacing:-.035em;line-height:1;margin-bottom:10px;
+  }
+  .stat .lab{font-size:.94rem;color:var(--muted);line-height:1.5}
+
+  /* ===== next ===== */
+  .nextrow{
+    display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+    padding:36px 0 0;
+  }
+  .next-card{
+    flex:1;min-width:280px;
+    padding:26px 28px;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .25s;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+  }
+  .next-card:hover{
+    transform:translateY(-4px);box-shadow:var(--shadow-lift);
+    border-color:color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+  .next-card .k{
+    font-size:.7rem;font-weight:700;letter-spacing:.16em;
+    color:var(--muted);text-transform:uppercase;margin-bottom:6px;
+  }
+  .next-card .v{font-size:1.08rem;font-weight:700;letter-spacing:-.01em}
+  .next-card .arrow{color:var(--accent);font-size:1.3rem}
+
+  /* ===== footer ===== */
+  footer{padding:48px 0;border-top:1px solid var(--border);color:var(--muted);font-size:.84rem}
+  footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  /* ===== reveal animation =====
+     resting 상태는 항상 보이게 — transform만 애니메이션.
+     JS가 비활성/실패해도 화면이 비지 않도록 .is-out은 JS에서 부여될 때만 의미를 가짐. */
+  .reveal{
+    transition:transform .7s var(--ease);
+    will-change:transform;
+  }
+  .reveal.is-out{transform:translateY(22px)}
+  @media (prefers-reduced-motion: reduce){
+    .reveal,.reveal.is-out{transform:none !important;transition:none !important}
+    .step,.feature,.next-card{transition:none !important}
+    html{scroll-behavior:auto}
+  }
+
+  /* ===== cursor follower (desktop only) ===== */
+  .cursor{
+    position:fixed;top:0;left:0;width:100px;height:100px;
+    border-radius:999px;pointer-events:none;
+    background:radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 60%);
+    transform:translate(-50%,-50%);
+    z-index:1;mix-blend-mode:normal;opacity:0;
+    transition:opacity .4s var(--ease);
+  }
+  @media (hover:hover) and (pointer:fine){
+    .cursor.on{opacity:.7}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cursor{display:none}
+  }
+
+  /* ===== responsive ===== */
+  @media (max-width:920px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .mock{transform:rotate(-.6deg);max-width:520px;margin:0 auto}
+    .two-col{grid-template-columns:1fr;gap:28px}
+    .steps{grid-template-columns:1fr}
+    .features{grid-template-columns:repeat(2,1fr)}
+    .stats{grid-template-columns:repeat(3,1fr)}
+  }
+  @media (max-width:720px){
+    .hero{padding:40px 0 56px}
+    section.block{padding:56px 0}
+    .features{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    .meta{grid-template-columns:1fr}
+    .nextrow{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" aria-hidden="true"></div>
+
+<!-- ===== TOP NAV ===== -->
+<header class="topnav">
+  <div class="container row">
+    <a class="navlink" href="/profile.html" aria-label="홈으로">
+      <span aria-hidden="true">←</span>
+      <span>홈으로</span>
+    </a>
+    <a class="pill" href="https://www.codiyoung.com" target="_blank" rel="noopener">
+      <span>사이트 방문</span>
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-left reveal is-out">
+      <div class="brand-logo"><img src="/codiyoung-logo.png" alt="코디영 로고"></div>
+      <p class="eyebrow">청년 스터디 · 프로젝트 · 친목 커뮤니티</p>
+      <h1 class="title-xl"><b>CODI</b><span>YOUNG</span></h1>
+      <div class="chips">
+        <span class="chip purple">#커뮤니티</span>
+        <span class="chip">#신규 구축</span>
+        <span class="chip">#반응형</span>
+        <span class="chip">#0→1</span>
+      </div>
+      <p class="lead">
+        혼자 공부하기 어려운 청년들이 같은 관심사로 모여 스터디를 할 수 있습니다.<br>
+        프로젝트를 함께 하고, 여행, 친목까지 이어지는 커뮤니티 플랫폼을 설계했습니다.
+      </p>
+      <div class="meta" id="meta-block"></div>
+    </div>
+
+    <div class="hero-right reveal is-out">
+      <div class="mock">
+        <div class="mock-frame">
+          <div class="mock-bar">
+            <i></i><i></i><i></i>
+            <span>www.codiyoung.com</span>
+          </div>
+          <div class="mock-screen">
+            <!-- 실제 스크린샷으로 교체: public/codiyoung-screenshot.png -->
+            <div class="ph">
+              <div class="lg"><img src="/codiyoung-logo.png" alt=""></div>
+              <div>스크린샷 자리 — public/codiyoung-screenshot.png</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OVERVIEW ===== -->
+<section class="block" id="overview">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Overview</p>
+      <h2>"같이 하면 끝까지 갑니다"</h2>
+      <p>혼자서는 작심삼일이 되기 쉬운 코딩·디자인·영상편집 학습을,<br>함께하면서 포기하지않고 주변 크루원들에게 자극을 받아 끝까지 갑니다.</p>
+    </div>
+    <div class="two-col">
+      <div></div>
+      <aside class="facts reveal is-out">
+        <p class="flabel">핵심 요약</p>
+        <ul id="overview-facts"></ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROBLEM ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Problem &amp; Approach</p>
+      <h2>왜 청년들은 학습을 끝까지 못 갈까?</h2>
+      <p>인터뷰에서 반복적으로 나온 키워드는 외로움, 정보 부족, 그리고 막연함이었습니다.</p>
+    </div>
+    <div class="two-col">
+      <div class="body-text reveal is-out">
+        <p>스터디를 결심한 청년들 다수가 정보 부족과 협업을 해보고 싶어서였습니다.<br>같이하는 사람 구하기가 힘들고 사람이 많아도 실질적으로 도움이 되지 않는다고 했습니다.<br>학습용 디스코드, 오픈채팅, SNS 모임은 진입 장벽이 높고 신뢰도가 낮습니다.</p>
+        <p>코디영은 검증된 동료들로 신청 후 인터뷰를 거쳐 보증된 분들과 스터디를 하고,<br>일회성이 아닌 꾸준함으로 설계했습니다.</p>
+      </div>
+      <aside class="facts reveal is-out">
+        <p class="flabel">우리가 던진 질문</p>
+        <ul id="problem-facts"></ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Process</p>
+      <h2>0에서 1까지, 4단계로</h2>
+      <p>가설을 빠르게 검증하고 운영 가능한 형태로 출시하기 위해 짧은 사이클을 반복했습니다.</p>
+    </div>
+    <div class="steps" id="step-list"></div>
+  </div>
+</section>
+
+<!-- ===== KEY FEATURES ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Key Features</p>
+      <h2>학습 → 협업 → 친목으로<br>이어지는 세 가지 축</h2>
+      <p>각 기능은 독립적으로도 쓰지만, 사용자가 자연스럽게 다음 단계로 넘어가도록 연결했습니다.</p>
+    </div>
+    <div class="features" id="feature-list"></div>
+  </div>
+</section>
+
+<!-- ===== OUTCOME ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Outcome</p>
+      <h2>출시 후 첫 분기 지표</h2>
+      <p>수치는 출시 후 90일 운영 결과 기준의 예시값입니다. 실측 데이터로 교체할 수 있도록 분리해 두었습니다.</p>
+    </div>
+    <div class="stats" id="stat-list"></div>
+  </div>
+</section>
+
+<!-- ===== REFLECTION ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Reflection</p>
+      <h2>배운 것, 그리고 다시 한다면</h2>
+      <p>처음 만든 0→1 서비스에서 PM이 가장 늦게 배우는 것은 "무엇을 만들지 않을지"였습니다.</p>
+    </div>
+    <div class="two-col">
+      <div class="body-text reveal is-out">
+        <p>초기 스코프를 욕심내서 잡았다가, 출시 2주 전에 절반을 잘라낸 경험이 가장 큰 학습이었습니다. 핵심 가설(스터디 매칭 → 출석 → 완주)에 정렬되지 않은 기능은 모두 후순위로 미루는 결정이 결국 출시일을 지키게 만들었습니다.</p>
+        <p>다음에는 가설 검증 단계에서 더 작은 프로토타입으로 시작하고, 운영 데이터를 처음부터 대시보드로 노출해 의사결정 속도를 끌어올리고 싶습니다.</p>
+      </div>
+      <aside class="facts reveal is-out">
+        <p class="flabel">다음 단계</p>
+        <ul id="reflection-facts"></ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEXT ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Next</p>
+      <h2>다음 프로젝트</h2>
+    </div>
+    <div class="nextrow">
+      <a class="next-card reveal is-out" href="/profile.html#project" aria-label="모든 프로젝트로 돌아가기">
+        <div>
+          <div class="k">All</div>
+          <div class="v">← 모든 프로젝트</div>
+        </div>
+        <span class="arrow" aria-hidden="true">←</span>
+      </a>
+      <a class="next-card reveal is-out" href="/work/chungpodo.html" aria-label="다음 프로젝트 청포도로 이동">
+        <div>
+          <div class="k">Next project</div>
+          <div class="v">청포도 →</div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div>© 2026 홍성범 · 코디영 케이스 스터디</div>
+    <div>Designed &amp; written in Seoul</div>
+  </div>
+</footer>
+
+<script>
+  // ===== 데이터 (편집/추가가 쉽게 분리) =====
+  /** @type {{label:string, value?:string, items?:string[]}[]} */
+  const META = [
+    { label: '투입 인력', value: 'PM 1 · 개발자 1' },
+    { label: '담당 역할', items: [
+        '홈페이지 기획 개발',
+        '크루원 모집 면접',
+        '스케줄 관리',
+        '영업 마케팅'
+      ]},
+    { label: '핵심 성과', items: [
+        '0→1 출시 (Web 반응형)',
+        '크루원 0 → 14명'
+      ]}
+  ];
+
+  /** @type {string[]} */
+  const OVERVIEW_FACTS = [
+    '코딩·디자인·영상편집 3개 카테고리',
+    '주제별 스터디 + 공모전 + 친목 여행 3축',
+    '일본어 지원 예정',
+    '출석 체크 · 완주 인증 시스템'
+  ];
+
+  /** @type {string[]} */
+  const PROBLEM_FACTS = [
+    '같이 가는 사람을 어떻게 찾을까?',
+    '진도를 어떻게 보이게 만들까?',
+    '오프라인 친목까지 어떻게 연결할까?',
+    'IT 업계에 관한 정보는 어디서 얻을 수 있을까?'
+  ];
+
+  /** @type {{n:string, t:string, d:string}[]} */
+  const STEPS = [
+    { n:'01', t:'리서치 & 인터뷰', d:'인터뷰로 선발해 기존 크루원들의 만족도를 높였습니다.' },
+    { n:'02', t:'사용자 흐름 설계', d:'신청, 매칭, 친목까지 자연스럽게 이어지도록 흐름을 짰습니다.' },
+    { n:'03', t:'시안 제작 & 테스트', d:'Claude로 개발을 하고 직접 써보면서 불편한 점을 고쳤습니다.' },
+    { n:'04', t:'출시 & 운영', d:'Vercel 프론트, Railway 백엔드로 배포·운영 중입니다.' }
+  ];
+
+  /** @type {{icon:string, t:string, d:string}[]} */
+  const FEATURES = [
+    {
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h11l3 3v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 8h7M8 12h7M8 16h4"/></svg>`,
+      t:'주제별 스터디',
+      d:'코딩·디자인·영상편집 카테고리별로 매칭. 출석 체크와 완주 인증으로 학습을 가시화합니다.'
+    },
+    {
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.6 8.7 8 10 4.4-1.3 8-5 8-10V6Z"/><path d="m9 12 2 2 4-4"/></svg>`,
+      t:'공모전 · 프로젝트',
+      d:'팀 매칭으로 공모전을 함께 준비하고, 미니 프로젝트로 결과물을 남깁니다.'
+    },
+    {
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg>`,
+      t:'친목 여행',
+      d:'온라인에서 시작한 인연을 오프라인으로 잇는 정기 모임·여행 프로그램.'
+    }
+  ];
+
+  /** @type {{n:string, lab:string}[]} */
+  const STATS = [
+    { n:'1,200+', lab:'90일간 가입한 청년 회원 수' },
+    { n:'72%',    lab:'4주 스터디 완주율 (전기 대비 +18%p)' },
+    { n:'48',     lab:'출시 분기 내 개설된 스터디 수' }
+  ];
+
+  /** @type {string[]} */
+  const REFLECTION_FACTS = [
+    '운영 대시보드 정식 구축',
+    'AI 매칭으로 팀 결성 자동화',
+    '일본 사용자 온보딩 강화',
+    '오프라인 모임 거점 확대'
+  ];
+
+  // ===== 렌더 =====
+  function el(html){
+    const tpl=document.createElement('template');
+    tpl.innerHTML=html.trim();
+    return tpl.content.firstElementChild;
+  }
+  function escape(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+  // Meta
+  const metaBox=document.getElementById('meta-block');
+  META.forEach(m=>{
+    const block=document.createElement('div');
+    const k=document.createElement('div');k.className='k';k.textContent=m.label;
+    block.appendChild(k);
+    if(m.items){
+      const ul=document.createElement('ul');
+      m.items.forEach(it=>{const li=document.createElement('li');li.textContent=it;ul.appendChild(li);});
+      block.appendChild(ul);
+    } else {
+      const v=document.createElement('div');v.className='v';v.textContent=m.value||'';
+      block.appendChild(v);
+    }
+    metaBox.appendChild(block);
+  });
+
+  // Facts lists
+  function fillList(id, arr){
+    const ul=document.getElementById(id);
+    if(!ul) return;
+    arr.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
+  }
+  fillList('overview-facts', OVERVIEW_FACTS);
+  fillList('problem-facts', PROBLEM_FACTS);
+  fillList('reflection-facts', REFLECTION_FACTS);
+
+  // Steps
+  const stepWrap=document.getElementById('step-list');
+  STEPS.forEach(s=>{
+    stepWrap.appendChild(el(`
+      <article class="step reveal is-out">
+        <div class="num">${escape(s.n)}</div>
+        <div>
+          <h3>${escape(s.t)}</h3>
+          <p>${escape(s.d)}</p>
+        </div>
+      </article>
+    `));
+  });
+
+  // Features
+  const featWrap=document.getElementById('feature-list');
+  FEATURES.forEach(f=>{
+    featWrap.appendChild(el(`
+      <article class="feature reveal is-out">
+        <div class="ic" aria-hidden="true">${f.icon}</div>
+        <h3>${escape(f.t)}</h3>
+        <p>${escape(f.d)}</p>
+      </article>
+    `));
+  });
+
+  // Stats
+  const statWrap=document.getElementById('stat-list');
+  STATS.forEach(s=>{
+    statWrap.appendChild(el(`
+      <div class="stat reveal is-out">
+        <div class="n">${escape(s.n)}</div>
+        <div class="lab">${escape(s.lab)}</div>
+      </div>
+    `));
+  });
+
+  // ===== Scroll reveal — transform only, never display:none =====
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.remove('is-out');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.remove('is-out'));
+  }
+
+  // ===== Cursor follower (desktop pointer only) =====
+  const cursor = document.querySelector('.cursor');
+  const supportsPointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if (cursor && supportsPointer && !prefersReduced){
+    let x=0,y=0,tx=0,ty=0,raf=0;
+    const tick=()=>{
+      x += (tx-x)*0.14; y += (ty-y)*0.14;
+      cursor.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%)`;
+      raf = requestAnimationFrame(tick);
+    };
+    window.addEventListener('pointermove', (e)=>{
+      tx=e.clientX; ty=e.clientY;
+      cursor.classList.add('on');
+      if(!raf) raf = requestAnimationFrame(tick);
+    }, {passive:true});
+    window.addEventListener('pointerleave', ()=>cursor.classList.remove('on'));
+  }
+</script>
+</body>
+</html>
