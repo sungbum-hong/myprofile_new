@@ -12,7 +12,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         profile: resolve(__dirname, 'profile.html'),
-        codiyoung: resolve(__dirname, 'work/codiyoung.html')
+        codiyoung: resolve(__dirname, 'work/codiyoung.html'),
+        chungpodo: resolve(__dirname, 'work/chungpodo.html')
       }
     }
   }
