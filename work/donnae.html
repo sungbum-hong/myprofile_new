@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>청포도 (Chungpodo) — 케이스 스터디 / 홍성범</title>
-<meta name="description" content="집구하기·자취꿀팁·일상상담을 한 곳에 모은 청년 생활 지원 플랫폼 '청포도'의 0→1 구축 케이스 스터디.">
-<link rel="icon" type="image/png" href="/chungpodo_logo.png">
+<title>돈內한바퀴 — 케이스 스터디 / 홍성범</title>
+<meta name="description" content="걸으면 동네에 돈이 도는 제주 골목 여행 앱 ‘돈內한바퀴’ 케이스 스터디.">
+<link rel="icon" type="image/png" href="/images/projects/donnae-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<!-- 內 only: Pretendard has no Hanja, so this one-glyph subset keeps it from falling back to an OS font -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&text=%E5%85%A7&display=swap">
 <style>
   :root{
     --bg:#FFFFFF;
@@ -17,8 +20,9 @@
     --muted:#6B7280;
     --border:#EDEDF0;
     --chip-bg:#F5F5F7;
-    --accent:#7BC043;
-    --accent-soft:#E8F5D8;
+    --accent:#F57722;        /* logo orange (sampled from donnae-logo.png): 2.8:1 on white — decoration only */
+    --accent-soft:#FEEFE4;
+    --accent-ink:var(--text);  /* text that used to take the accent */
     --shadow-1:0 1px 2px rgba(20,20,30,.04);
     --shadow-2:0 18px 40px -22px rgba(20,20,40,.18), 0 2px 6px rgba(20,20,40,.04);
     --shadow-lift:0 28px 60px -28px rgba(20,20,40,.28), 0 3px 10px rgba(20,20,40,.06);
@@ -34,8 +38,8 @@
       --muted:#9CA3AF;
       --border:#25252B;
       --chip-bg:#1B1B21;
-      --accent:#A6DC74;
-      --accent-soft:#1F2E15;
+      --accent:#F57722;
+      --accent-soft:#3A2414;
       --shadow-1:0 1px 2px rgba(0,0,0,.4);
       --shadow-2:0 18px 40px -22px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.3);
       --shadow-lift:0 28px 60px -28px rgba(0,0,0,.8), 0 3px 10px rgba(0,0,0,.35);
@@ -45,14 +49,15 @@
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    font-family:'Pretendard Variable','Pretendard',system-ui,-apple-system,sans-serif;
+    font-family:'Pretendard Variable','Pretendard','Noto Sans KR',system-ui,-apple-system,sans-serif;
     background:var(--bg);color:var(--text);
     -webkit-font-smoothing:antialiased;
     line-height:1.6;
     overflow-x:hidden;
+    word-break:keep-all;overflow-wrap:break-word;
   }
   a{color:inherit;text-decoration:none}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+  :focus-visible{outline:2px solid var(--accent-ink);outline-offset:3px;border-radius:4px}
 
   .container{max-width:var(--container);margin:0 auto;padding:0 28px}
 
@@ -91,6 +96,7 @@
   }
   .brand-logo{
     width:56px;height:56px;border-radius:16px;
+    background:var(--chip-bg);
     display:flex;align-items:center;justify-content:center;overflow:hidden;
     margin-bottom:22px;
   }
@@ -99,7 +105,7 @@
   .eyebrow{
     display:inline-block;
     font-size:.74rem;font-weight:700;letter-spacing:.22em;
-    color:var(--accent);text-transform:uppercase;
+    color:var(--accent-ink);text-transform:uppercase;
     margin-bottom:14px;
   }
   .title-xl{
@@ -116,7 +122,7 @@
     background:var(--chip-bg);border:1px solid var(--border);
     padding:6px 12px;border-radius:999px;
   }
-  .chip.green{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:600}
+  .chip.accent{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent;font-weight:600}
 
   .lead{
     font-size:1.02rem;color:var(--muted);max-width:520px;
@@ -189,6 +195,27 @@
   }
   .mock-screen .ph .lg img{width:46px;height:46px}
 
+  /* project colour as bars (case pages) */
+  .eyebrow::before{
+    content:"";display:inline-block;width:18px;height:3px;border-radius:2px;
+    background:var(--accent);vertical-align:middle;margin:-2px 10px 0 0;
+  }
+  /* small logo beside the title */
+  .title-row{display:flex;align-items:center;gap:clamp(12px,1.6vw,20px);margin-bottom:24px}
+  .title-row .title-xl{margin-bottom:0}
+  .title-logo{width:clamp(48px,5vw,64px);height:auto;flex:none;display:block}
+  /* no logo file yet: same box as the logo, filled with the project colour + white word mark
+     (swap the element for <img class="title-logo" …> when the file arrives) */
+  .title-logo.wordmark{
+    aspect-ratio:1;border-radius:16px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(.72rem,1.1vw,.86rem);font-weight:800;letter-spacing:.06em;
+  }
+  /* mockup screen = brand splash: logo (or word mark) on the project colour */
+  .mock-screen.brand{background:var(--accent);background-image:none}
+  .mock-screen.brand img{width:30%;height:auto;object-fit:contain}
+  .mock-screen.brand .wordmark{color:#fff;font-size:clamp(2rem,5vw,3.4rem);font-weight:800;letter-spacing:.08em}
+
   /* ===== section base ===== */
   section.block{padding:84px 0;border-top:1px solid var(--border)}
   .section-head{margin-bottom:42px;max-width:760px}
@@ -202,6 +229,7 @@
   .two-col{
     display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:start;
   }
+  /* Overview: 핵심 요약 카드를 섹션 헤딩 옆으로 끌어올림 */
   @media (min-width:921px){
     #overview .facts{margin-top:-150px}
   }
@@ -218,7 +246,7 @@
   }
   .facts .flabel{
     font-size:.72rem;font-weight:700;letter-spacing:.18em;
-    color:var(--accent);text-transform:uppercase;margin-bottom:14px;
+    color:var(--accent-ink);text-transform:uppercase;margin-bottom:14px;
   }
   .facts ul{list-style:none;display:flex;flex-direction:column;gap:10px}
   .facts li{
@@ -230,9 +258,56 @@
     width:7px;height:7px;border-radius:999px;background:var(--accent);
   }
 
+  /* problem callout + lists + roadmap (case pages) */
+  .facts.callout{min-height:0}
+  .facts.callout .n{
+    font-size:3.4rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--accent-ink);
+  }
+  .facts.callout .n::after{
+    content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--accent);margin-top:14px;
+  }
+  .facts.callout .lab{margin-top:12px;font-size:.94rem;color:var(--muted)}
+  .facts.callout .lab + .n{margin-top:26px}
+  .sublabel{
+    font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px !important;
+  }
+  ul.dots{list-style:none;display:flex;flex-direction:column;gap:12px}
+  ul.dots li{position:relative;padding-left:18px;font-size:1rem;line-height:1.6}
+  ul.dots li::before{
+    content:"";position:absolute;left:0;top:.65em;width:7px;height:7px;border-radius:999px;background:var(--accent);
+  }
+  .stats.one{grid-template-columns:minmax(0,440px)}
+  .stats.four{grid-template-columns:repeat(2,1fr)}
+  ul.dots.roles li{font-size:1.06rem}
+  .gap-top{margin-top:42px}
+  .feature .mini{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:6px}
+  .feature .mini li{position:relative;padding-left:14px;font-size:.9rem;color:var(--text);line-height:1.5}
+  .feature .mini li::before{
+    content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:999px;background:var(--accent);
+  }
+  /* cards with a project-colour top bar (roadmap, business model) */
+  .phases{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .phases.three{grid-template-columns:repeat(3,1fr)}
+  .phase{
+    padding:28px 26px;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow-1);position:relative;overflow:hidden;
+  }
+  .phase::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--accent)}
+  .phase .k{
+    font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:10px;
+  }
+  .phase .v{font-size:1.12rem;font-weight:700;letter-spacing:-.01em;line-height:1.5}
+  .stat .n::after{
+    content:"";display:block;width:32px;height:4px;border-radius:2px;background:var(--accent);margin-top:14px;
+  }
+  /* the long overview paragraph must stay left of the pulled-up summary card */
+  #overview .section-head{max-width:600px}
+
   /* ===== process ===== */
   .steps{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    display:grid;grid-template-columns:repeat(2,1fr);gap:18px;
   }
   .step{
     display:grid;grid-template-columns:88px 1fr;gap:18px;
@@ -247,16 +322,11 @@
     border-color:color-mix(in srgb, var(--accent) 40%, var(--border));
   }
   .step .num{
-    font-size:3rem;font-weight:800;color:var(--accent);
+    font-size:3rem;font-weight:800;color:var(--accent-ink);
     letter-spacing:-.04em;line-height:1;
   }
   .step h3{font-size:1.12rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
-  .step p{
-    font-size:.92rem;color:var(--muted);line-height:1.65;
-    white-space:pre-line;
-    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
-    overflow:hidden;min-height:3.3em;
-  }
+  .step p{font-size:.92rem;color:var(--muted);line-height:1.65}
 
   /* ===== features ===== */
   .features{
@@ -275,13 +345,28 @@
   }
   .feature .ic{
     width:46px;height:46px;border-radius:13px;
-    background:var(--accent-soft);color:var(--accent);
+    background:var(--accent-soft);color:var(--accent-ink);
     display:flex;align-items:center;justify-content:center;
     margin-bottom:18px;
   }
   .feature .ic svg{width:24px;height:24px}
   .feature h3{font-size:1.08rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
-  .feature p{font-size:.92rem;color:var(--muted);line-height:1.65;white-space:pre-line}
+  .feature p{font-size:.92rem;color:var(--muted);line-height:1.65}
+
+  /* ===== outcome ===== */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .stat{
+    padding:32px 28px;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+  }
+  .stat .n{
+    font-size:2.75rem;font-weight:800;color:var(--accent-ink);
+    letter-spacing:-.035em;line-height:1;margin-bottom:10px;
+  }
+  .stat .lab{font-size:.94rem;color:var(--muted);line-height:1.5}
 
   /* ===== next ===== */
   .nextrow{
@@ -305,13 +390,15 @@
     color:var(--muted);text-transform:uppercase;margin-bottom:6px;
   }
   .next-card .v{font-size:1.08rem;font-weight:700;letter-spacing:-.01em}
-  .next-card .arrow{color:var(--accent);font-size:1.3rem}
+  .next-card .arrow{color:var(--accent-ink);font-size:1.3rem}
 
   /* ===== footer ===== */
   footer{padding:48px 0;border-top:1px solid var(--border);color:var(--muted);font-size:.84rem}
   footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
-  /* ===== reveal animation ===== */
+  /* ===== reveal animation =====
+     resting 상태는 항상 보이게 — transform만 애니메이션.
+     JS가 비활성/실패해도 화면이 비지 않도록 .is-out은 JS에서 부여될 때만 의미를 가짐. */
   .reveal{
     transition:transform .7s var(--ease);
     will-change:transform;
@@ -346,11 +433,14 @@
     .two-col{grid-template-columns:1fr;gap:28px}
     .steps{grid-template-columns:1fr}
     .features{grid-template-columns:repeat(2,1fr)}
+    .stats{grid-template-columns:repeat(3,1fr)}
+    .phases.three{grid-template-columns:1fr}
   }
   @media (max-width:720px){
     .hero{padding:40px 0 56px}
     section.block{padding:56px 0}
     .features{grid-template-columns:1fr}
+    .stats,.stats.one,.stats.four,.phases{grid-template-columns:1fr}
     .meta{grid-template-columns:1fr}
     .nextrow{flex-direction:column}
   }
@@ -367,10 +457,6 @@
       <span aria-hidden="true">←</span>
       <span>홈으로</span>
     </a>
-    <a class="pill" href="https://www.chungpodo.com" target="_blank" rel="noopener noreferrer">
-      <span>청포도 사이트 방문</span>
-      <span aria-hidden="true">↗</span>
-    </a>
   </div>
 </header>
 
@@ -378,18 +464,21 @@
 <section class="hero">
   <div class="container hero-grid">
     <div class="hero-left reveal is-out">
-      <div class="brand-logo"><img src="/chungpodo_logo.png" alt="청포도 로고"></div>
-      <p class="eyebrow">청년 생활 지원 플랫폼</p>
-      <h1 class="title-xl"><b>CHUNG</b><span>PODO</span></h1>
+      <p class="eyebrow">걸으면 동네에 돈이 도는 제주 골목 여행 앱</p>
+      <div class="title-row">
+        <img class="title-logo" src="/images/projects/donnae-logo.png" alt="돈內한바퀴 로고" width="64" height="64">
+        <h1 class="title-xl"><b>돈內</b><span>한바퀴</span></h1>
+      </div>
       <div class="chips">
-        <span class="chip green">#청년주거</span>
-        <span class="chip">#자취가이드</span>
-        <span class="chip">#일상상담</span>
-        <span class="chip">#0→1</span>
+        <span class="chip accent">2026 관광데이터 활용 공모전 · 서류 심사 통과</span>
+        <span class="chip">Flutter</span>
+        <span class="chip">AR</span>
+        <span class="chip">관광공사 API</span>
+        <span class="chip">3면 플랫폼</span>
       </div>
       <p class="lead">
-        "청년들, 포기하지마. 도와줄게."<br>
-        혼자 사회로 나가는 청년의 첫 자취를 함께 시작합니다.
+        관광공사 혼잡도 데이터로 덜 붐비는 골목 코스를 추천하고,
+        걸으며 모은 AR 코인을 동네 가게 할인권으로 바꿔 소상공인 매출로 잇는 서비스
       </p>
       <div class="meta" id="meta-block"></div>
     </div>
@@ -399,13 +488,11 @@
         <div class="mock-frame">
           <div class="mock-bar">
             <i></i><i></i><i></i>
-            <span>www.chungpodo.com</span>
+            <span>돈內한바퀴</span>
           </div>
-          <div class="mock-screen">
-            <div class="ph">
-              <div class="lg"><img src="/chungpodo_logo.png" alt=""></div>
-              <div>스크린샷 자리 — public/chungpodo-screenshot.png</div>
-            </div>
+          <!-- brand splash: logo on its own orange, so the square icon blends into the frame -->
+          <div class="mock-screen brand">
+            <img src="/images/projects/donnae-logo.png" alt="" width="512" height="512">
           </div>
         </div>
       </div>
@@ -418,8 +505,10 @@
   <div class="container">
     <div class="section-head reveal is-out">
       <p class="eyebrow">Overview</p>
-      <h2>"혼자 살아도, 혼자가 아니게"</h2>
-      <p>처음 자취하는 청년에게 가장 어려운 건 정보의 산재와 막막한 일상.<br>청포도는 집을 구하는 순간부터 자취 적응까지 한 흐름으로 이어줍니다.</p>
+      <h2>덜 붐비는 골목을 걸으면,<br>동네에 돈이 돕니다</h2>
+      <p>제주의 골목을 걸으며 AR 코인을 모으고, 그 코인을 동네 가게 할인권으로 바꿔 쓰는
+         위치기반 여행 앱입니다. "동네 한바퀴"에 돈과 內(안)을 겹친 이름처럼,
+         여행자의 걸음이 동네 안에서 돌도록 설계했습니다.</p>
     </div>
     <div class="two-col">
       <div></div>
@@ -435,80 +524,110 @@
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Problem &amp; Approach</p>
-      <h2>왜 청년들의 자취는 외로울까?</h2>
-      <p>인터뷰에서 가장 자주 나온 키워드는 "어디서부터 물어봐야 할지 모르겠다"였습니다.</p>
+      <p class="eyebrow">Problem</p>
+      <h2>유명한 관광지에만 사람이 붐비고,<br>다른 여행지에는 사람이 없습니다.</h2>
     </div>
     <div class="two-col">
       <div class="body-text reveal is-out">
-        <p>처음 독립한 청년들은 전월세 계약, 가전·가구 선택, 공과금·관리비처럼<br>당연한 듯 보이지만 처음 마주하면 막막한 문제들을 매일 만납니다.</p>
-        <p>청포도는 집구하기 가이드 · 자취꿀팁 · 일상상담을 한 곳에 모아<br>"검색하면 흩어져 있는 정보"를 "한 번에 따라가는 흐름"으로 묶었습니다.</p>
+        <p>함덕해수욕장의 성수기 관광지 집중률은 79%에 이릅니다.</p>
       </div>
-      <aside class="facts reveal is-out">
-        <p class="flabel">우리가 던진 질문</p>
-        <ul id="problem-facts"></ul>
+      <aside class="facts callout reveal is-out">
+        <p class="flabel">함덕해수욕장 성수기</p>
+        <div class="n">79%</div>
+        <p class="lab">관광지 집중률</p>
       </aside>
     </div>
   </div>
 </section>
 
-<!-- ===== PROCESS ===== -->
+<!-- ===== HOW IT WORKS ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Process</p>
-      <h2>0에서 1까지, 3단계로</h2>
-      <p>정보 구조 설계 → 프로토타입 → 베타 운영의 짧은 사이클을 반복했습니다.</p>
+      <p class="eyebrow">How it works</p>
+      <h2>4단계로 도는 한바퀴</h2>
     </div>
     <div class="steps" id="step-list"></div>
   </div>
 </section>
 
-<!-- ===== KEY FEATURES ===== -->
+<!-- ===== KEY DECISIONS ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Key Features</p>
-      <h2>집 / 자취 / 상담</h2>
-      <p>독립을 결심한 시점부터 적응을 마치는 시점까지, 단계마다 필요한 기능을 배치했습니다.</p>
+      <p class="eyebrow">Key Decisions</p>
+      <h2>방향을 바꾼 세 가지 결정</h2>
     </div>
     <div class="features" id="feature-list"></div>
   </div>
 </section>
 
-<!-- ===== REFLECTION ===== -->
+<!-- ===== DATA & TECH ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Reflection</p>
-      <h2>배운 것, 그리고 다시 한다면</h2>
-      <p>청년 서비스에서 가장 강력한 기능은 결국 "곁에 있어주는 느낌"이었습니다.</p>
+      <p class="eyebrow">Data &amp; Tech</p>
+      <h2>데이터와 기술</h2>
     </div>
     <div class="two-col">
       <div class="body-text reveal is-out">
-        <p>처음에는 정보의 양으로 풀려 했지만, 인터뷰에서 "결국 사람한테 묻게 된다"는 말이 반복돼 가설을 바꿨습니다. 상담을 홈 첫 화면에 올리고, 정보는 보조 자료로 역할을 정리했습니다.</p>
-        <p>현재는 베타 배포까지 마친 상태이며, 다음은 상담 응답 시간 운영과 지역 자취 데이터 연결을 검증하는 단계입니다.</p>
+        <p class="sublabel">한국관광공사 데이터</p>
+        <ul class="dots" id="data-list"></ul>
       </div>
       <aside class="facts reveal is-out">
-        <p class="flabel">다음 단계</p>
-        <ul id="reflection-facts"></ul>
+        <p class="flabel">기술 스택</p>
+        <ul id="tech-facts"></ul>
       </aside>
     </div>
   </div>
 </section>
 
-<!-- ===== NEXT ===== -->
+<!-- ===== MY ROLE ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">My Role</p>
+      <h2>내 역할</h2>
+    </div>
+    <ul class="dots roles reveal is-out" id="role-list"></ul>
+  </div>
+</section>
+
+<!-- ===== RESULT ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Result</p>
+      <h2>결과</h2>
+    </div>
+    <div class="stats one" id="stat-list"></div>
+  </div>
+</section>
+
+<!-- ===== NEXT (roadmap) ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
       <p class="eyebrow">Next</p>
-      <h2>다른 프로젝트</h2>
+      <h2>다음 단계</h2>
     </div>
+    <div class="phases" id="phase-list"></div>
+  </div>
+</section>
+
+<!-- ===== MORE PROJECTS ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Projects</p>
+      <h2>다음 프로젝트</h2>
+    </div>
+    <!-- order: CODIYOUNG → 돈內한바퀴 → VOVO → 청포도 -->
     <div class="nextrow">
-      <a class="next-card reveal is-out" href="/work/vovo.html" aria-label="이전 프로젝트 VOVO로 이동">
+      <a class="next-card reveal is-out" href="/work/codiyoung.html" aria-label="이전 프로젝트 코디영으로 이동">
         <div>
           <div class="k">Prev project</div>
-          <div class="v">← VOVO</div>
+          <div class="v">← CODIYOUNG</div>
         </div>
         <span class="arrow" aria-hidden="true">←</span>
       </a>
@@ -519,74 +638,107 @@
         </div>
         <span class="arrow" aria-hidden="true">↑</span>
       </a>
+      <a class="next-card reveal is-out" href="/work/vovo.html" aria-label="다음 프로젝트 VOVO로 이동">
+        <div>
+          <div class="k">Next project</div>
+          <div class="v">VOVO →</div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="container row">
-    <div>© 2026 홍성범 · 청포도 케이스 스터디</div>
+    <div>© 2026 홍성범 · 돈內한바퀴 케이스 스터디</div>
     <div>Designed &amp; written in Seoul</div>
   </div>
 </footer>
 
 <script>
   // ===== 데이터 (편집/추가가 쉽게 분리) =====
+
+  /** @type {{label:string, value?:string, items?:string[]}[]} */
   const META = [
-    { label: '투입 인력', value: 'PM 1 · 개발자 1' },
+    { label: '팀', value: '리코(Re:Co)' },
     { label: '담당 역할', items: [
-        '서비스 기획 · 정보 구조',
-        '랜딩 · 상담 흐름 설계',
-        '운영 · 마케팅'
+        '총기획 PM',
+        'Claude Code로 웹(가맹점 포털·운영 어드민) 구현',
+        'Claude Design으로 앱 화면 디자인 리드'
       ]},
     { label: '핵심 성과', items: [
-        '베타 출시 (Web 반응형)'
+        '2026 관광데이터 활용 공모전 서류 심사 통과'
       ]}
   ];
 
+  /** @type {string[]} */
   const OVERVIEW_FACTS = [
-    '집구하기 · 자취꿀팁 · 일상상담 3축 구조',
-    '청년 1인 가구 타깃 (20–34세)',
-    '지역별 시세 · 체크리스트 제공',
-    '익명 1:1 상담 채널 운영'
+    '유저 앱 · 가맹점(앱+웹) · 운영 어드민의 3면 플랫폼',
+    '한국관광공사 데이터 2종 활용 (중심 관광지 정보, 관광지 집중률)',
+    'AR 코인 → 가맹점 전용 할인권(1코인=1원) → QR 즉시 사용',
+    '제주 전역 적용, "함덕 해변 한바퀴" 실증 코스'
   ];
 
-  const PROBLEM_FACTS = [
-    '계약 전, 무엇을 꼭 확인해야 할까?',
-    '월급 안에서 자취 비용은 어떻게 짤까?',
-    '아플 때, 외로울 때 어디에 물어볼까?',
-    '청년 정책은 어디서 한 번에 볼 수 있을까?'
-  ];
-
+  /** @type {{n:string, t:string, d:string}[]} */
   const STEPS = [
-    { n:'01', t:'정보 구조 설계', d:'집·자취·상담 흐름으로 카테고리를 묶고 진입점을 단순화했습니다.' },
-    { n:'02', t:'프로토타입 & 테스트', d:'Figma로 상담 흐름을 만들고\n사용자 5명과 함께 다듬었습니다.' },
-    { n:'03', t:'베타 운영', d:'Vercel로 배포를 마치고 사용\n검증을 준비 중입니다.' }
+    { n:'01', t:'언제 걸을까', d:'관광지 집중률 예측으로 덜 붐비는 날과 코스를 추천 ("오늘 83%, 10/1(목)엔 59%")' },
+    { n:'02', t:'걷고 줍기', d:'스팟 반경 30m에 들어가면 AR 코인 등장, 코스 완주 시 보너스 코인' },
+    { n:'03', t:'바꾸기', d:'교환소에서 코인을 가맹점 할인권으로 교환, QR 티켓 발급' },
+    { n:'04', t:'쓰기', d:'사장님이 QR을 스캔하면 즉시 사용 처리, 중복 사용 차단' }
   ];
 
+  /** @type {{icon:string, t:string, d:string}[]} */
   const FEATURES = [
     {
-      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>`,
-      t:'집구하기 가이드',
-      d:'전월세 체크리스트, 계약 시 주의사항, 지역별 시세\n정보를 단계별로 제공합니다.'
+      // ticket
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6Z"/><path d="M14 5v2M14 11v2M14 17v2"/></svg>`,
+      t:'지역화폐 환전 → 가맹점 전용 할인권',
+      d:'코인을 지역화폐로 1:1 환전하던 구조를 가맹점 전용 할인권으로 바꾸고, 지역화폐(탐나는전) 연동은 장기 과제로 돌렸습니다.'
     },
     {
-      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M19 17h2"/></svg>`,
-      t:'자취 꿀팁',
-      d:'공과금·청소·요리·가전 선택까지, 막 자취를 시작한\n사람을 위한 실용 콘텐츠.'
+      // route between two pins
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/></svg>`,
+      t:'코인 배율 → 혼잡도 연동 코스 추천',
+      d:'관광공사 데이터를 "덜 알려진 곳일수록 코인 배율을 높이는" 데 쓰려던 계획을, "언제, 어디를 걸으면 덜 붐비는지" 추천하는 데 쓰도록 바꿨습니다.'
     },
     {
-      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
-      t:'일상 상담',
-      d:'익명 1:1 채널로 청년이 마주한 소소한 고민에 또래\n상담사가 답합니다.'
+      // scan frame
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M7 12h10"/></svg>`,
+      t:'사장님 승인 단계 제거',
+      d:'할인권 사용에 사장님 승인 단계가 있던 설계에서, QR 스캔 자체가 검증이므로 승인은 바쁜 사장님에게 불필요한 마찰이라고 판단해 스캔 즉시 사용으로 바꿨습니다.'
     }
   ];
 
-  const REFLECTION_FACTS = [
-    '또래 상담사 매칭 시스템',
-    '지역별 자취 데이터 시각화',
-    '청년 정책 알림 자동화',
-    '오프라인 모임 거점 실험'
+  /** @type {string[]} */
+  const DATA_LIST = [
+    '「중심 관광지 정보」로 제주 관광지 200곳 좌표 적재',
+    '「관광지 집중률」 30일 예측(448건) 매일 동기화',
+    '집중률 데이터에 좌표가 없어, 스팟 반경 300m 기준으로 자동 매칭'
+  ];
+
+  /** @type {string[]} */
+  const TECH_FACTS = [
+    '지도 VWorld, 도보 경로 OSM + OSRM, 주소→좌표 카카오 로컬 API',
+    '앱 Flutter, 가맹점 포털·어드민 웹, 서버'
+  ];
+
+  /** @type {string[]} */
+  const ROLES = [
+    '팀 리코(Re:Co)의 총기획 PM',
+    'Claude Code로 웹(가맹점 포털·운영 어드민) 구현',
+    'Claude Design으로 앱 화면 디자인 리드'
+  ];
+
+  /** @type {{n:string, lab:string}[]} */
+  const STATS = [
+    { n:'서류 통과', lab:'2026 관광데이터 활용 공모전 서류 심사' }
+  ];
+
+  /** @type {{k:string, v:string}[]} */
+  const PHASES = [
+    { k:'중기 (6개월)', v:'숏츠 퀘스트, 가맹점 유료 플랜' },
+    { k:'장기 (1년)',   v:'지역화폐(탐나는전) 연동' }
   ];
 
   // ===== 렌더 =====
@@ -597,6 +749,7 @@
   }
   function escape(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 
+  // Meta
   const metaBox=document.getElementById('meta-block');
   META.forEach(m=>{
     const block=document.createElement('div');
@@ -613,15 +766,18 @@
     metaBox.appendChild(block);
   });
 
+  // Lists
   function fillList(id, arr){
     const ul=document.getElementById(id);
     if(!ul) return;
     arr.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
   }
   fillList('overview-facts', OVERVIEW_FACTS);
-  fillList('problem-facts', PROBLEM_FACTS);
-  fillList('reflection-facts', REFLECTION_FACTS);
+  fillList('data-list', DATA_LIST);
+  fillList('tech-facts', TECH_FACTS);
+  fillList('role-list', ROLES);
 
+  // Steps
   const stepWrap=document.getElementById('step-list');
   STEPS.forEach(s=>{
     stepWrap.appendChild(el(`
@@ -635,6 +791,7 @@
     `));
   });
 
+  // Features (key decisions)
   const featWrap=document.getElementById('feature-list');
   FEATURES.forEach(f=>{
     featWrap.appendChild(el(`
@@ -646,6 +803,29 @@
     `));
   });
 
+  // Stats
+  const statWrap=document.getElementById('stat-list');
+  STATS.forEach(s=>{
+    statWrap.appendChild(el(`
+      <div class="stat reveal is-out">
+        <div class="n">${escape(s.n)}</div>
+        <div class="lab">${escape(s.lab)}</div>
+      </div>
+    `));
+  });
+
+  // Roadmap phases
+  const phaseWrap=document.getElementById('phase-list');
+  PHASES.forEach(p=>{
+    phaseWrap.appendChild(el(`
+      <div class="phase reveal is-out">
+        <div class="k">${escape(p.k)}</div>
+        <div class="v">${escape(p.v)}</div>
+      </div>
+    `));
+  });
+
+  // ===== Scroll reveal — transform only, never display:none =====
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!prefersReduced && 'IntersectionObserver' in window){
     const io = new IntersectionObserver((entries)=>{
@@ -661,6 +841,7 @@
     document.querySelectorAll('.reveal').forEach(el=>el.classList.remove('is-out'));
   }
 
+  // ===== Cursor follower (desktop pointer only) =====
   const cursor = document.querySelector('.cursor');
   const supportsPointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   if (cursor && supportsPointer && !prefersReduced){

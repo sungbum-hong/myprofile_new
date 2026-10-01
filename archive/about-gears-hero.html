@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+  ARCHIVE — About "black + metal gears" hero
+  Removed from profile.html on 2026-10-01 (Phase 4: hub → single scroll page).
+  It was the SPA About detail view (.detail.detail-about). CSS and markup below are
+  copied as they were; only the standalone wrapper (body/.detail box) is added so the
+  file renders on its own. Not part of the Vite build (vite.config.js inputs).
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive · About gears hero</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#FFFFFF; --ink:#2B2630; --muted:#9C97A4; --line:#E7E4EA}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'IBM Plex Sans KR',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+  .app{position:relative;width:min(900px,94vw);margin:0 auto}
+
+  /* --- original: shared detail box (as it was when the About view was open) --- */
+  .detail{position:relative;padding:140px 6px 90px;max-width:660px}
+  .detail-about{--acc:#ED0E6E}
+  .detail h1{
+    font-size:clamp(1.7rem,4.2vw,2.4rem);font-weight:600;line-height:1.35;
+    letter-spacing:-.01em;margin-bottom:22px;
+  }
+
+  /* --- original: about page typography --- */
+  .detail-about h1{
+    position:relative;
+    font-weight:300;
+    background:#0B0910;color:#FFFFFF;
+    padding:120px 32px;
+    box-shadow:0 0 0 100vmax #0B0910;
+    clip-path:inset(0 -100vmax);
+  }
+  .detail-about h1 b{font-weight:700}
+  .detail-about h1 .name{font-weight:700;color:var(--acc)}
+
+  /* --- original: about gears (background decoration) --- */
+  .detail-about .gears{
+    position:absolute;
+    top:232px;right:0;
+    width:740px;height:auto;
+    pointer-events:none;z-index:1;
+    overflow:visible;
+  }
+  .detail-about .gears .hole{fill:#0B0910}
+  .detail-about .gears .spin{
+    transform-origin:0 0;
+    animation:gearSpin 22s linear infinite;
+  }
+  .detail-about .gear-2 .spin{animation-duration:15s;animation-direction:reverse}
+  .detail-about .gear-3 .spin{animation-duration:11s}
+  @keyframes gearSpin{to{transform:rotate(360deg)}}
+
+  /* --- original: mobile overrides --- */
+  @media(max-width:720px){
+    .detail{padding-top:160px}
+    .detail-about h1{padding:83px 22px}
+    .detail-about .gears{top:210px;width:440px}
+  }
+  @media(prefers-reduced-motion:reduce){.detail-about .spin{animation:none}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== DETAIL : ABOUT (original markup) ===== -->
+  <section class="detail detail-about">
+    <svg class="gears" viewBox="0 0 720 220" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="gear-face" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#CFCFCF"/>
+          <stop offset="0.5" stop-color="#7A7A7A"/>
+          <stop offset="1" stop-color="#2F2F2F"/>
+        </linearGradient>
+        <rect id="t1" x="-5" y="-62" width="10" height="12" rx="1.5" fill="url(#gear-face)"/>
+        <rect id="t2" x="-4" y="-46" width="8" height="9" rx="1.2" fill="url(#gear-face)"/>
+        <rect id="t3" x="-3.5" y="-33" width="7" height="7" rx="1" fill="url(#gear-face)"/>
+        <filter id="gear-shadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3"/>
+        </filter>
+      </defs>
+      <g class="gear gear-1" transform="translate(510,90)">
+        <ellipse cx="3" cy="58" rx="55" ry="7" fill="#000" opacity="0.45" filter="url(#gear-shadow)"/>
+        <g class="spin">
+          <use href="#t1"/>
+          <use href="#t1" transform="rotate(30)"/>
+          <use href="#t1" transform="rotate(60)"/>
+          <use href="#t1" transform="rotate(90)"/>
+          <use href="#t1" transform="rotate(120)"/>
+          <use href="#t1" transform="rotate(150)"/>
+          <use href="#t1" transform="rotate(180)"/>
+          <use href="#t1" transform="rotate(210)"/>
+          <use href="#t1" transform="rotate(240)"/>
+          <use href="#t1" transform="rotate(270)"/>
+          <use href="#t1" transform="rotate(300)"/>
+          <use href="#t1" transform="rotate(330)"/>
+          <circle r="50" fill="url(#gear-face)"/>
+          <circle r="17" class="hole"/>
+        </g>
+      </g>
+      <g class="gear gear-2" transform="translate(600,135)">
+        <ellipse cx="2" cy="42" rx="40" ry="5" fill="#000" opacity="0.45" filter="url(#gear-shadow)"/>
+        <g class="spin">
+          <use href="#t2"/>
+          <use href="#t2" transform="rotate(36)"/>
+          <use href="#t2" transform="rotate(72)"/>
+          <use href="#t2" transform="rotate(108)"/>
+          <use href="#t2" transform="rotate(144)"/>
+          <use href="#t2" transform="rotate(180)"/>
+          <use href="#t2" transform="rotate(216)"/>
+          <use href="#t2" transform="rotate(252)"/>
+          <use href="#t2" transform="rotate(288)"/>
+          <use href="#t2" transform="rotate(324)"/>
+          <circle r="36" fill="url(#gear-face)"/>
+          <circle r="12" class="hole"/>
+        </g>
+      </g>
+      <g class="gear gear-3" transform="translate(550,175)">
+        <ellipse cx="1.5" cy="30" rx="29" ry="4" fill="#000" opacity="0.45" filter="url(#gear-shadow)"/>
+        <g class="spin">
+          <use href="#t3"/>
+          <use href="#t3" transform="rotate(45)"/>
+          <use href="#t3" transform="rotate(90)"/>
+          <use href="#t3" transform="rotate(135)"/>
+          <use href="#t3" transform="rotate(180)"/>
+          <use href="#t3" transform="rotate(225)"/>
+          <use href="#t3" transform="rotate(270)"/>
+          <use href="#t3" transform="rotate(315)"/>
+          <circle r="26" fill="url(#gear-face)"/>
+          <circle r="9" class="hole"/>
+        </g>
+      </g>
+    </svg>
+    <h1>
+      유기적이며 생각을 실행으로,<br>실행을 결과로 증명하는<br><b>PM</b> <span class="name">홍성범</span> 입니다.
+    </h1>
+  </section>
+
+</div>
+</body>
+</html>

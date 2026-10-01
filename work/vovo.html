@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>코디영 (CODIYOUNG) — 케이스 스터디 / 홍성범</title>
-<meta name="description" content="청년 스터디·프로젝트·친목 커뮤니티 ‘코디영’의 0→1 구축 케이스 스터디.">
+<title>VOVO — 케이스 스터디 / 홍성범</title>
+<meta name="description" content="검증된 사람끼리만 주고받는 블록체인 결제·송금 지갑 ‘VOVO’ 케이스 스터디.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563EB'/%3E%3Cpath d='M9 10l7 13 7-13' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
-<!-- 內 only (next-project link "돈內한바퀴"): Pretendard has no Hanja -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&text=%E5%85%A7&display=swap">
 <style>
   :root{
     --bg:#FFFFFF;
@@ -18,8 +18,9 @@
     --muted:#6B7280;
     --border:#EDEDF0;
     --chip-bg:#F5F5F7;
-    --accent:#7C5CFF;
-    --accent-soft:#EFEAFF;
+    --accent:#2563EB;        /* VOVO blue (5.2:1 on white, but kept to decoration like every case page) — decoration only */
+    --accent-soft:#EAF1FE;
+    --accent-ink:var(--text);  /* text that used to take the accent */
     --shadow-1:0 1px 2px rgba(20,20,30,.04);
     --shadow-2:0 18px 40px -22px rgba(20,20,40,.18), 0 2px 6px rgba(20,20,40,.04);
     --shadow-lift:0 28px 60px -28px rgba(20,20,40,.28), 0 3px 10px rgba(20,20,40,.06);
@@ -35,8 +36,8 @@
       --muted:#9CA3AF;
       --border:#25252B;
       --chip-bg:#1B1B21;
-      --accent:#9D86FF;
-      --accent-soft:#251E48;
+      --accent:#2563EB;
+      --accent-soft:#16213A;
       --shadow-1:0 1px 2px rgba(0,0,0,.4);
       --shadow-2:0 18px 40px -22px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.3);
       --shadow-lift:0 28px 60px -28px rgba(0,0,0,.8), 0 3px 10px rgba(0,0,0,.35);
@@ -46,14 +47,15 @@
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    font-family:'Pretendard Variable','Pretendard','Noto Sans KR',system-ui,-apple-system,sans-serif;
+    font-family:'Pretendard Variable','Pretendard',system-ui,-apple-system,sans-serif;
     background:var(--bg);color:var(--text);
     -webkit-font-smoothing:antialiased;
     line-height:1.6;
     overflow-x:hidden;
+    word-break:keep-all;overflow-wrap:break-word;
   }
   a{color:inherit;text-decoration:none}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+  :focus-visible{outline:2px solid var(--accent-ink);outline-offset:3px;border-radius:4px}
 
   .container{max-width:var(--container);margin:0 auto;padding:0 28px}
 
@@ -101,7 +103,7 @@
   .eyebrow{
     display:inline-block;
     font-size:.74rem;font-weight:700;letter-spacing:.22em;
-    color:var(--accent);text-transform:uppercase;
+    color:var(--accent-ink);text-transform:uppercase;
     margin-bottom:14px;
   }
   .title-xl{
@@ -118,7 +120,7 @@
     background:var(--chip-bg);border:1px solid var(--border);
     padding:6px 12px;border-radius:999px;
   }
-  .chip.purple{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:600}
+  .chip.accent{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent;font-weight:600}
 
   .lead{
     font-size:1.02rem;color:var(--muted);max-width:520px;
@@ -191,6 +193,27 @@
   }
   .mock-screen .ph .lg img{width:46px;height:46px}
 
+  /* project colour as bars (case pages) */
+  .eyebrow::before{
+    content:"";display:inline-block;width:18px;height:3px;border-radius:2px;
+    background:var(--accent);vertical-align:middle;margin:-2px 10px 0 0;
+  }
+  /* small logo beside the title */
+  .title-row{display:flex;align-items:center;gap:clamp(12px,1.6vw,20px);margin-bottom:24px}
+  .title-row .title-xl{margin-bottom:0}
+  .title-logo{width:clamp(48px,5vw,64px);height:auto;flex:none;display:block}
+  /* no logo file yet: same box as the logo, filled with the project colour + white word mark
+     (swap the element for <img class="title-logo" …> when the file arrives) */
+  .title-logo.wordmark{
+    aspect-ratio:1;border-radius:16px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(.72rem,1.1vw,.86rem);font-weight:800;letter-spacing:.06em;
+  }
+  /* mockup screen = brand splash: logo (or word mark) on the project colour */
+  .mock-screen.brand{background:var(--accent);background-image:none}
+  .mock-screen.brand img{width:30%;height:auto;object-fit:contain}
+  .mock-screen.brand .wordmark{color:#fff;font-size:clamp(2rem,5vw,3.4rem);font-weight:800;letter-spacing:.08em}
+
   /* ===== section base ===== */
   section.block{padding:84px 0;border-top:1px solid var(--border)}
   .section-head{margin-bottom:42px;max-width:760px}
@@ -221,7 +244,7 @@
   }
   .facts .flabel{
     font-size:.72rem;font-weight:700;letter-spacing:.18em;
-    color:var(--accent);text-transform:uppercase;margin-bottom:14px;
+    color:var(--accent-ink);text-transform:uppercase;margin-bottom:14px;
   }
   .facts ul{list-style:none;display:flex;flex-direction:column;gap:10px}
   .facts li{
@@ -232,6 +255,53 @@
     content:"";position:absolute;left:0;top:.62em;
     width:7px;height:7px;border-radius:999px;background:var(--accent);
   }
+
+  /* problem callout + lists + roadmap (case pages) */
+  .facts.callout{min-height:0}
+  .facts.callout .n{
+    font-size:3.4rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--accent-ink);
+  }
+  .facts.callout .n::after{
+    content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--accent);margin-top:14px;
+  }
+  .facts.callout .lab{margin-top:12px;font-size:.94rem;color:var(--muted)}
+  .facts.callout .lab + .n{margin-top:26px}
+  .sublabel{
+    font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px !important;
+  }
+  ul.dots{list-style:none;display:flex;flex-direction:column;gap:12px}
+  ul.dots li{position:relative;padding-left:18px;font-size:1rem;line-height:1.6}
+  ul.dots li::before{
+    content:"";position:absolute;left:0;top:.65em;width:7px;height:7px;border-radius:999px;background:var(--accent);
+  }
+  .stats.one{grid-template-columns:minmax(0,440px)}
+  .stats.four{grid-template-columns:repeat(2,1fr)}
+  ul.dots.roles li{font-size:1.06rem}
+  .gap-top{margin-top:42px}
+  .feature .mini{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:6px}
+  .feature .mini li{position:relative;padding-left:14px;font-size:.9rem;color:var(--text);line-height:1.5}
+  .feature .mini li::before{
+    content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:999px;background:var(--accent);
+  }
+  /* cards with a project-colour top bar (roadmap, business model) */
+  .phases{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .phases.three{grid-template-columns:repeat(3,1fr)}
+  .phase{
+    padding:28px 26px;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow-1);position:relative;overflow:hidden;
+  }
+  .phase::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--accent)}
+  .phase .k{
+    font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:10px;
+  }
+  .phase .v{font-size:1.12rem;font-weight:700;letter-spacing:-.01em;line-height:1.5}
+  .stat .n::after{
+    content:"";display:block;width:32px;height:4px;border-radius:2px;background:var(--accent);margin-top:14px;
+  }
+  /* the long overview paragraph must stay left of the pulled-up summary card */
+  #overview .section-head{max-width:600px}
 
   /* ===== process ===== */
   .steps{
@@ -250,7 +320,7 @@
     border-color:color-mix(in srgb, var(--accent) 40%, var(--border));
   }
   .step .num{
-    font-size:3rem;font-weight:800;color:var(--accent);
+    font-size:3rem;font-weight:800;color:var(--accent-ink);
     letter-spacing:-.04em;line-height:1;
   }
   .step h3{font-size:1.12rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
@@ -273,7 +343,7 @@
   }
   .feature .ic{
     width:46px;height:46px;border-radius:13px;
-    background:var(--accent-soft);color:var(--accent);
+    background:var(--accent-soft);color:var(--accent-ink);
     display:flex;align-items:center;justify-content:center;
     margin-bottom:18px;
   }
@@ -291,7 +361,7 @@
     box-shadow:var(--shadow-1);
   }
   .stat .n{
-    font-size:2.75rem;font-weight:800;color:var(--accent);
+    font-size:2.75rem;font-weight:800;color:var(--accent-ink);
     letter-spacing:-.035em;line-height:1;margin-bottom:10px;
   }
   .stat .lab{font-size:.94rem;color:var(--muted);line-height:1.5}
@@ -318,7 +388,7 @@
     color:var(--muted);text-transform:uppercase;margin-bottom:6px;
   }
   .next-card .v{font-size:1.08rem;font-weight:700;letter-spacing:-.01em}
-  .next-card .arrow{color:var(--accent);font-size:1.3rem}
+  .next-card .arrow{color:var(--accent-ink);font-size:1.3rem}
 
   /* ===== footer ===== */
   footer{padding:48px 0;border-top:1px solid var(--border);color:var(--muted);font-size:.84rem}
@@ -362,12 +432,13 @@
     .steps{grid-template-columns:1fr}
     .features{grid-template-columns:repeat(2,1fr)}
     .stats{grid-template-columns:repeat(3,1fr)}
+    .phases.three{grid-template-columns:1fr}
   }
   @media (max-width:720px){
     .hero{padding:40px 0 56px}
     section.block{padding:56px 0}
     .features{grid-template-columns:1fr}
-    .stats{grid-template-columns:1fr}
+    .stats,.stats.one,.stats.four,.phases{grid-template-columns:1fr}
     .meta{grid-template-columns:1fr}
     .nextrow{flex-direction:column}
   }
@@ -384,10 +455,6 @@
       <span aria-hidden="true">←</span>
       <span>홈으로</span>
     </a>
-    <a class="pill" href="https://www.codiyoung.com" target="_blank" rel="noopener">
-      <span>사이트 방문</span>
-      <span aria-hidden="true">↗</span>
-    </a>
   </div>
 </header>
 
@@ -395,18 +462,22 @@
 <section class="hero">
   <div class="container hero-grid">
     <div class="hero-left reveal is-out">
-      <div class="brand-logo"><img src="/codiyoung-logo.png" alt="코디영 로고"></div>
-      <p class="eyebrow">청년 스터디 · 프로젝트 · 친목 커뮤니티</p>
-      <h1 class="title-xl"><b>CODI</b><span>YOUNG</span></h1>
+      <p class="eyebrow">검증된 사람끼리만 주고받는 블록체인 결제·송금 지갑</p>
+      <div class="title-row">
+        <!-- logo slot: replace with <img class="title-logo" src="/images/projects/vovo-logo.png" alt="VOVO 로고" width="64" height="64"> -->
+        <div class="title-logo wordmark" aria-hidden="true">VOVO</div>
+        <h1 class="title-xl"><b>VO</b><span>VO</span></h1>
+      </div>
       <div class="chips">
-        <span class="chip purple">#커뮤니티</span>
-        <span class="chip">#신규 구축</span>
-        <span class="chip">#반응형</span>
-        <span class="chip">#0→1</span>
+        <span class="chip accent">MVP 구현 완료 · e2e 테스트 45개 통과</span>
+        <span class="chip">Blockchain</span>
+        <span class="chip">Stablecoin</span>
+        <span class="chip">DID</span>
+        <span class="chip">NestJS</span>
       </div>
       <p class="lead">
-        혼자 공부하기 어려운 청년들이 같은 관심사로 모여 스터디를 할 수 있습니다.<br>
-        프로젝트를 함께 하고, 여행, 친목까지 이어지는 커뮤니티 플랫폼을 설계했습니다.
+        모바일 신분증으로 만든 신원 증명서를 지갑에 결속하고,
+        의심 거래는 실행 전에 멈춰 가족 보호자 확인을 거치는 스테이블코인 지갑
       </p>
       <div class="meta" id="meta-block"></div>
     </div>
@@ -416,14 +487,11 @@
         <div class="mock-frame">
           <div class="mock-bar">
             <i></i><i></i><i></i>
-            <span>www.codiyoung.com</span>
+            <span>VOVO</span>
           </div>
-          <div class="mock-screen">
-            <!-- 실제 스크린샷으로 교체: public/codiyoung-screenshot.png -->
-            <div class="ph">
-              <div class="lg"><img src="/codiyoung-logo.png" alt=""></div>
-              <div>스크린샷 자리 — public/codiyoung-screenshot.png</div>
-            </div>
+          <!-- brand splash: word mark on VOVO blue (swap for the logo image later) -->
+          <div class="mock-screen brand">
+            <span class="wordmark" aria-hidden="true">VOVO</span>
           </div>
         </div>
       </div>
@@ -436,8 +504,10 @@
   <div class="container">
     <div class="section-head reveal is-out">
       <p class="eyebrow">Overview</p>
-      <h2>"같이 하면 끝까지 갑니다"</h2>
-      <p>혼자서는 작심삼일이 되기 쉬운 코딩·디자인·영상편집 학습을,<br>함께하면서 포기하지않고 주변 크루원들에게 자극을 받아 끝까지 갑니다.</p>
+      <h2>보내는 사람도, 받는 사람도<br>검증된 지갑</h2>
+      <p>VOVO는 정부 모바일 신분증으로 신원이 검증된 사람끼리 스테이블코인과 암호화폐로
+         결제·송금하는 블록체인 지갑입니다. 이름은 Verified Only, Verified Only —
+         양쪽 모두 검증돼야 거래가 성립한다는 뜻입니다.</p>
     </div>
     <div class="two-col">
       <div></div>
@@ -453,88 +523,129 @@
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Problem &amp; Approach</p>
-      <h2>왜 청년들은 학습을 끝까지 못 갈까?</h2>
-      <p>인터뷰에서 반복적으로 나온 키워드는 외로움, 정보 부족, 그리고 막연함이었습니다.</p>
+      <p class="eyebrow">Problem</p>
+      <h2>블록체인 송금은 누구에게 보내는지 모르고,<br>한 번 보내면 되돌릴 수 없습니다.</h2>
     </div>
-    <div class="two-col">
+    <div class="features" id="problem-list"></div>
+    <div class="two-col gap-top">
       <div class="body-text reveal is-out">
-        <p>스터디를 결심한 청년들 다수가 정보 부족과 협업을 해보고 싶어서였습니다.<br>같이하는 사람 구하기가 힘들고 사람이 많아도 실질적으로 도움이 되지 않는다고 했습니다.<br>학습용 디스코드, 오픈채팅, SNS 모임은 진입 장벽이 높고 신뢰도가 낮습니다.</p>
-        <p>코디영은 검증된 동료들로 신청 후 인터뷰를 거쳐 보증된 분들과 스터디를 하고,<br>일회성이 아닌 꾸준함으로 설계했습니다.</p>
+        <p>2025년 보이스피싱 피해액은 처음으로 연간 1조 원을 넘었고, 피해자의 53%가 50대 이상입니다.</p>
+        <p>원화 스테이블코인 제도화가 다가오지만, 논의는 발행자 규율에 집중되어
+           발행 이후 이용자를 보호하는 장치는 비어 있습니다.</p>
       </div>
-      <aside class="facts reveal is-out">
-        <p class="flabel">우리가 던진 질문</p>
-        <ul id="problem-facts"></ul>
+      <aside class="facts callout reveal is-out">
+        <p class="flabel">2025년 보이스피싱</p>
+        <div class="n">1조 원+</div>
+        <p class="lab">연간 피해액</p>
+        <div class="n">53%</div>
+        <p class="lab">50대 이상 피해자 비율</p>
       </aside>
     </div>
   </div>
 </section>
 
-<!-- ===== PROCESS ===== -->
+<!-- ===== HOW IT WORKS ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Process</p>
-      <h2>0에서 1까지, 4단계로</h2>
-      <p>가설을 빠르게 검증하고 운영 가능한 형태로 출시하기 위해 짧은 사이클을 반복했습니다.</p>
+      <p class="eyebrow">How it works</p>
+      <h2>4단계로 동작합니다</h2>
     </div>
     <div class="steps" id="step-list"></div>
   </div>
 </section>
 
-<!-- ===== KEY FEATURES ===== -->
+<!-- ===== KEY DECISIONS ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Key Features</p>
-      <h2>학습 → 협업 → 친목으로<br>이어지는 세 가지 축</h2>
-      <p>각 기능은 독립적으로도 쓰지만, 사용자가 자연스럽게 다음 단계로 넘어가도록 연결했습니다.</p>
+      <p class="eyebrow">Key Decisions</p>
+      <h2>방향을 정한 세 가지 결정</h2>
     </div>
     <div class="features" id="feature-list"></div>
   </div>
 </section>
 
-<!-- ===== OUTCOME ===== -->
+<!-- ===== TECH ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
-      <p class="eyebrow">Outcome</p>
-      <h2>출시 후 첫 분기 지표</h2>
-      <p>수치는 출시 후 90일 운영 결과 기준의 예시값입니다. 실측 데이터로 교체할 수 있도록 분리해 두었습니다.</p>
-    </div>
-    <div class="stats" id="stat-list"></div>
-  </div>
-</section>
-
-<!-- ===== REFLECTION ===== -->
-<section class="block">
-  <div class="container">
-    <div class="section-head reveal is-out">
-      <p class="eyebrow">Reflection</p>
-      <h2>배운 것, 그리고 다시 한다면</h2>
-      <p>처음 만든 0→1 서비스에서 PM이 가장 늦게 배우는 것은 "무엇을 만들지 않을지"였습니다.</p>
+      <p class="eyebrow">Tech</p>
+      <h2>기술</h2>
     </div>
     <div class="two-col">
       <div class="body-text reveal is-out">
-        <p>초기 스코프를 욕심내서 잡았다가, 출시 2주 전에 절반을 잘라낸 경험이 가장 큰 학습이었습니다. 핵심 가설(스터디 매칭 → 출석 → 완주)에 정렬되지 않은 기능은 모두 후순위로 미루는 결정이 결국 출시일을 지키게 만들었습니다.</p>
-        <p>다음에는 가설 검증 단계에서 더 작은 프로토타입으로 시작하고, 운영 데이터를 처음부터 대시보드로 노출해 의사결정 속도를 끌어올리고 싶습니다.</p>
+        <p class="sublabel">구현</p>
+        <ul class="dots" id="tech-list"></ul>
       </div>
       <aside class="facts reveal is-out">
-        <p class="flabel">다음 단계</p>
-        <ul id="reflection-facts"></ul>
+        <p class="flabel">온체인 설계</p>
+        <ul id="onchain-facts"></ul>
       </aside>
     </div>
   </div>
 </section>
 
-<!-- ===== NEXT ===== -->
+<!-- ===== BUSINESS MODEL ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Business Model</p>
+      <h2>수익 모델</h2>
+    </div>
+    <div class="phases three" id="biz-list"></div>
+  </div>
+</section>
+
+<!-- ===== MY ROLE ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">My Role</p>
+      <h2>내 역할</h2>
+    </div>
+    <ul class="dots roles reveal is-out" id="role-list"></ul>
+  </div>
+</section>
+
+<!-- ===== RESULT ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Result</p>
+      <h2>결과</h2>
+    </div>
+    <div class="stats four" id="stat-list"></div>
+  </div>
+</section>
+
+<!-- ===== NEXT (roadmap) ===== -->
 <section class="block">
   <div class="container">
     <div class="section-head reveal is-out">
       <p class="eyebrow">Next</p>
+      <h2>다음 단계</h2>
+    </div>
+    <div class="phases" id="phase-list"></div>
+  </div>
+</section>
+
+<!-- ===== MORE PROJECTS ===== -->
+<section class="block">
+  <div class="container">
+    <div class="section-head reveal is-out">
+      <p class="eyebrow">Projects</p>
       <h2>다음 프로젝트</h2>
     </div>
+    <!-- order: CODIYOUNG → 돈內한바퀴 → VOVO → 청포도 -->
     <div class="nextrow">
+      <a class="next-card reveal is-out" href="/work/donnae.html" aria-label="이전 프로젝트 돈內한바퀴로 이동">
+        <div>
+          <div class="k">Prev project</div>
+          <div class="v">← 돈內한바퀴</div>
+        </div>
+        <span class="arrow" aria-hidden="true">←</span>
+      </a>
       <a class="next-card reveal is-out" href="/profile.html#project" aria-label="모든 프로젝트로 돌아가기">
         <div>
           <div class="k">All</div>
@@ -542,10 +653,10 @@
         </div>
         <span class="arrow" aria-hidden="true">↑</span>
       </a>
-      <a class="next-card reveal is-out" href="/work/donnae.html" aria-label="다음 프로젝트 돈內한바퀴로 이동">
+      <a class="next-card reveal is-out" href="/work/chungpodo.html" aria-label="다음 프로젝트 청포도로 이동">
         <div>
           <div class="k">Next project</div>
-          <div class="v">돈內한바퀴 →</div>
+          <div class="v">청포도 →</div>
         </div>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
@@ -555,84 +666,129 @@
 
 <footer>
   <div class="container row">
-    <div>© 2026 홍성범 · 코디영 케이스 스터디</div>
+    <div>© 2026 홍성범 · VOVO 케이스 스터디</div>
     <div>Designed &amp; written in Seoul</div>
   </div>
 </footer>
 
 <script>
   // ===== 데이터 (편집/추가가 쉽게 분리) =====
+
   /** @type {{label:string, value?:string, items?:string[]}[]} */
   const META = [
-    { label: '투입 인력', value: 'PM 1 · 개발자 1' },
     { label: '담당 역할', items: [
-        '홈페이지 기획 개발',
-        '크루원 모집 면접',
-        '스케줄 관리',
-        '영업 마케팅'
+        '서비스 정의와 기획',
+        'Claude Design으로 앱 화면 설계',
+        'Claude Code로 백엔드 구현과 테스트'
       ]},
     { label: '핵심 성과', items: [
-        '0→1 출시 (Web 반응형)',
-        '크루원 0 → 14명'
+        'MVP 구현 완료',
+        'e2e 테스트 45개 통과',
+        '제9회 핀테크 아이디어 공모전 참가'
       ]}
   ];
 
   /** @type {string[]} */
   const OVERVIEW_FACTS = [
-    '코딩·디자인·영상편집 3개 카테고리',
-    '주제별 스터디 + 공모전 + 친목 여행 3축',
-    '일본어 지원 예정',
-    '출석 체크 · 완주 인증 시스템'
+    'KRWT(원화 스테이블코인) · USDT · BTC 지갑, 가맹점 QR 결제, 송금, 충전·인출',
+    '신원 증명서(VC)를 지갑에 결속해 출금 후에도 검증 유지',
+    'AI 이상거래 탐지 + 가족 보호자 승인',
+    '앱과 백엔드가 실제로 동작하는 MVP'
   ];
 
-  /** @type {string[]} */
-  const PROBLEM_FACTS = [
-    '같이 가는 사람을 어떻게 찾을까?',
-    '진도를 어떻게 보이게 만들까?',
-    '오프라인 친목까지 어떻게 연결할까?',
-    'IT 업계에 관한 정보는 어디서 얻을 수 있을까?'
+  /** @type {{icon:string, t:string, d:string, list?:string[]}[]} */
+  const PROBLEMS = [
+    {
+      // unknown recipient
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/><path d="M12 7v.01"/></svg>`,
+      t:'상대를 모른다',
+      d:'지갑 주소만으로는 받는 사람을 확인할 수 없습니다'
+    },
+    {
+      // no undo
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/><path d="m3 21 18-18"/></svg>`,
+      t:'되돌릴 수 없다',
+      d:'실행되는 순간 확정되어 사기나 실수를 복구할 수 없습니다'
+    },
+    {
+      // broken link
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7a5 5 0 0 1 0-10h2"/><path d="M15 7h2a5 5 0 0 1 4 8"/><path d="M8 12h3"/><path d="m3 3 18 18"/></svg>`,
+      t:'신원이 끊긴다',
+      d:'거래소 실명확인은 거래소 안에서만 유효하고, 개인 지갑으로 출금하면 적용되지 않습니다'
+    }
   ];
 
   /** @type {{n:string, t:string, d:string}[]} */
   const STEPS = [
-    { n:'01', t:'리서치 & 인터뷰', d:'인터뷰로 선발해 기존 크루원들의 만족도를 높였습니다.' },
-    { n:'02', t:'사용자 흐름 설계', d:'신청, 매칭, 친목까지 자연스럽게 이어지도록 흐름을 짰습니다.' },
-    { n:'03', t:'시안 제작 & 테스트', d:'Claude로 개발을 하고 직접 써보면서 불편한 점을 고쳤습니다.' },
-    { n:'04', t:'출시 & 운영', d:'Vercel 프론트, Railway 백엔드로 배포·운영 중입니다.' }
+    { n:'01', t:'검증하기', d:'모바일 신분증으로 본인 인증, 신원 증명서(VC) 발급' },
+    { n:'02', t:'지갑에 결속', d:'증명서가 거래소 서버가 아니라 내 지갑에 붙음' },
+    { n:'03', t:'주고받기', d:'거래할 때 양쪽 증명서를 확인, 미검증 상대와의 거래는 차단' },
+    { n:'04', t:'멈추고 확인', d:'고액·심야·첫 거래·신고 이력 중 2개 이상이면 보류하고 가족 보호자 승인 후 실행. 정상 거래는 즉시 완료' }
   ];
 
-  /** @type {{icon:string, t:string, d:string}[]} */
+  /** @type {{icon:string, t:string, d:string, list?:string[]}[]} */
   const FEATURES = [
     {
-      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h11l3 3v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 8h7M8 12h7M8 16h4"/></svg>`,
-      t:'주제별 스터디',
-      d:'코딩·디자인·영상편집 카테고리별로 매칭. 출석 체크와 완주 인증으로 학습을 가시화합니다.'
+      // wallet
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2Z"/><path d="M16 14.5h.01"/></svg>`,
+      t:'"사기방지 앱"이 아니라 "결제·송금 지갑"',
+      d:'작업 중 서비스가 사기방지 앱처럼 풀이되는 것을 바로잡고, 본체는 지갑이고 안전 기능은 그 위의 차별점이라는 정의를 세웠습니다. 홈 화면의 주인공도 경고가 아니라 잔액과 결제·송금 버튼으로 다시 잡았습니다. 문제 정의 역시 팀의 사정이 아닌 사용자의 문제(블록체인 송금의 익명성과 비가역성)로 다시 썼습니다.'
     },
     {
-      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.6 8.7 8 10 4.4-1.3 8-5 8-10V6Z"/><path d="m9 12 2 2 4-4"/></svg>`,
-      t:'공모전 · 프로젝트',
-      d:'팀 매칭으로 공모전을 함께 준비하고, 미니 프로젝트로 결과물을 남깁니다.'
+      // target: depth over breadth
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>`,
+      t:'데모는 넓게가 아니라 깊게',
+      d:'실제 자금이나 메인넷 연동 대신 DB 기반 MVP로 범위를 정하고, 핵심 시나리오 세 가지를 끝까지 동작하게 만들었습니다.',
+      list:['정상 송금','미검증 상대 차단','의심 거래 → 보호자 승인 → 완료']
     },
     {
-      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg>`,
-      t:'친목 여행',
-      d:'온라인에서 시작한 인연을 오프라인으로 잇는 정기 모임·여행 프로그램.'
+      // layers
+      icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5Z"/><path d="m3 13 9 5 9-5"/></svg>`,
+      t:'자산마다 다른 안전 계층',
+      d:'KRWT는 허가형 체인이 검증된 사용자 사이의 거래를 보장하고, 퍼블릭 체인 자산인 USDT·BTC는 앱이 본인 명의 출구로만 내보내도록 설계했습니다.'
     }
+  ];
+
+  /** @type {string[]} */
+  const TECH_LIST = [
+    '백엔드 NestJS · Prisma · PostgreSQL',
+    '잔액 이동은 DB 트랜잭션으로 묶고, 금액은 DECIMAL로 저장',
+    '이상거래 탐지는 룰 기반으로 시작해 데이터가 쌓이면 모델로 고도화하는 구조',
+    '신원은 W3C DID/VC 표준 기반 설계'
+  ];
+
+  /** @type {string[]} */
+  const ONCHAIN_FACTS = [
+    '보호자 승인 규칙을 스마트컨트랙트로',
+    '사기 신고 이력을 주소 단위로 기록'
+  ];
+
+  /** @type {{k?:string, v:string}[]} */
+  const BIZ = [
+    { v:'가맹점 결제 수수료 (카드 대비 낮은 수수료)' },
+    { v:'신원 검증·이상거래 탐지 API를 스테이블코인 발행사·지갑 서비스에 B2B 제공' },
+    { v:'안심 보호 기능 구독' }
+  ];
+
+  /** @type {string[]} */
+  const ROLES = [
+    '서비스 정의와 기획: 블록체인 결제·송금 지갑으로의 프레이밍, 문제 정의',
+    'Claude Design으로 앱 화면 설계',
+    'Claude Code로 백엔드 구현과 테스트'
   ];
 
   /** @type {{n:string, lab:string}[]} */
   const STATS = [
-    { n:'1,200+', lab:'90일간 가입한 청년 회원 수' },
-    { n:'72%',    lab:'4주 스터디 완주율 (전기 대비 +18%p)' },
-    { n:'48',     lab:'출시 분기 내 개설된 스터디 수' }
+    { n:'MVP',     lab:'앱 전체 화면과 백엔드가 동작하는 MVP 구현' },
+    { n:'45개',    lab:'e2e 테스트 45개 통과' },
+    { n:'4 / 9건', lab:'동시 송금 9건 테스트에서 정확히 4건만 성공, 잔액 음수 없음 (중복 차감 방지 검증)' },
+    { n:'참가',    lab:'제9회 핀테크 아이디어 공모전 참가' }
   ];
 
-  /** @type {string[]} */
-  const REFLECTION_FACTS = [
-    '운영 대시보드 정식 구축',
-    'AI 매칭으로 팀 결성 자동화',
-    '일본 사용자 온보딩 강화',
-    '오프라인 모임 거점 확대'
+  /** @type {{k?:string, v:string}[]} */
+  const PHASES = [
+    { v:'테스트넷 온체인 연동, 사기 신고·경고 고도화, B2B 제휴' },
+    { v:'원화 스테이블코인 발행 시 즉시 연동, 가맹점 확대' }
   ];
 
   // ===== 렌더 =====
@@ -660,15 +816,16 @@
     metaBox.appendChild(block);
   });
 
-  // Facts lists
+  // Lists
   function fillList(id, arr){
     const ul=document.getElementById(id);
     if(!ul) return;
     arr.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
   }
   fillList('overview-facts', OVERVIEW_FACTS);
-  fillList('problem-facts', PROBLEM_FACTS);
-  fillList('reflection-facts', REFLECTION_FACTS);
+  fillList('tech-list', TECH_LIST);
+  fillList('onchain-facts', ONCHAIN_FACTS);
+  fillList('role-list', ROLES);
 
   // Steps
   const stepWrap=document.getElementById('step-list');
@@ -684,17 +841,22 @@
     `));
   });
 
-  // Features
-  const featWrap=document.getElementById('feature-list');
-  FEATURES.forEach(f=>{
-    featWrap.appendChild(el(`
-      <article class="feature reveal is-out">
-        <div class="ic" aria-hidden="true">${f.icon}</div>
-        <h3>${escape(f.t)}</h3>
-        <p>${escape(f.d)}</p>
-      </article>
-    `));
-  });
+  // Cards with icon (problems, key decisions)
+  function fillFeatures(id, arr){
+    const wrap=document.getElementById(id);
+    arr.forEach(f=>{
+      wrap.appendChild(el(`
+        <article class="feature reveal is-out">
+          <div class="ic" aria-hidden="true">${f.icon}</div>
+          <h3>${escape(f.t)}</h3>
+          <p>${escape(f.d)}</p>
+          ${f.list?`<ul class="mini">${f.list.map(x=>`<li>${escape(x)}</li>`).join('')}</ul>`:''}
+        </article>
+      `));
+    });
+  }
+  fillFeatures('problem-list', PROBLEMS);
+  fillFeatures('feature-list', FEATURES);
 
   // Stats
   const statWrap=document.getElementById('stat-list');
@@ -706,6 +868,21 @@
       </div>
     `));
   });
+
+  // Cards with a top bar (business model, roadmap)
+  function fillPhases(id, arr){
+    const wrap=document.getElementById(id);
+    arr.forEach(p=>{
+      wrap.appendChild(el(`
+        <div class="phase reveal is-out">
+          ${p.k?`<div class="k">${escape(p.k)}</div>`:''}
+          <div class="v">${escape(p.v)}</div>
+        </div>
+      `));
+    });
+  }
+  fillPhases('biz-list', BIZ);
+  fillPhases('phase-list', PHASES);
 
   // ===== Scroll reveal — transform only, never display:none =====
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
