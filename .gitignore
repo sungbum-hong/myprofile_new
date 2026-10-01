@@ -7,3 +7,6 @@ dist/
 .env
 .env.*
 .claude/
+
+# personal files not used by the site (kept outside public/ so builds never copy them)
+_private/
